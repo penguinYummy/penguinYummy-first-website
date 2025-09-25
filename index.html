@@ -140,9 +140,347 @@
 
 </div>
 
+<!-- Custom Message Box -->
+<div id="message-box" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden z-50">
+    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-center">
+        <p id="message-text" class="text-xl mb-4"></p>
+        <button class="btn" onclick="hideMessage()">확인</button>
+    </div>
+</div>
+
+
 <script>
     // 전역 변수 및 상태
     const events = [
         { name: "한국은행 -> 조선 은행", year: 1909, month: 0 },
         { name: "회사령", year: 1910, month: 0 },
-        { name: "범죄 즉결
+        { name: "범죄 즉결레", year: 1910, month: 0 },
+        { name: "토지 조사 사업", year: 1910, month: 0 },
+        { name: "제1차 조선교육령", year: 1911, month: 0 },
+        { name: "삼림령", year: 1911, month: 0 },
+        { name: "조선 태형령", year: 1912, month: 0 },
+        { name: "토지 조사령", year: 1912, month: 0 },
+        { name: "제1차 세계대전", year: 1914, month: 0 },
+        { name: "경원선, 호남선 완공", year: 1914, month: 0 },
+        { name: "임야 조사 사업", year: 1917, month: 0 },
+        { name: "고종 사망", year: 1919, month: 1 },
+        { name: "2·8 독립 선언", year: 1919, month: 2 },
+        { name: "3·1 운동", year: 1919, month: 3 },
+        { name: "대한 국민 의회", year: 1919, month: 3 },
+        { name: "대한민국 임시 헌장", year: 1919, month: 4 },
+        { name: "한성 정부 선포", year: 1919, month: 4 },
+        { name: "대한민국 임시 정부(통합 전)", year: 1919, month: 4 },
+        { name: "대한민국 임시 정부(통합 후)", year: 1919, month: 9 },
+        { name: "대한민국 임시 헌법", year: 1919, month: 9 },
+        { name: "의열단 조직", year: 1919, month: 0 },
+        { name: "봉오동 전투", year: 1920, month: 6 },
+        { name: "청산리 대첩", year: 1920, month: 10 },
+        { name: "간도 참변", year: 1920, month: 10 },
+        { name: "회사령 페지", year: 1920, month: 0 },
+        { name: "산미 증식 계획", year: 1920, month: 0 },
+        { name: "물산 장려 운동", year: 1920, month: 0 },
+        { name: "대한민국 임시 정부 침체", year: 1921, month: 0 },
+        { name: "자유시 참변", year: 1921, month: 0 },
+        { name: "조선어 연구회", year: 1921, month: 0 },
+        { name: "국민 대표 회의", year: 1923, month: 0 },
+        { name: "조선 혁명 선언", year: 1923, month: 0 },
+        { name: "조선 민립 대학 기성회", year: 1923, month: 0 },
+        { name: "관세 폐지", year: 1923, month: 0 },
+        { name: "형평 운동", year: 1923, month: 0 },
+        { name: "경성 제국 대학", year: 1924, month: 0 },
+        { name: "조선 노농 총동맹", year: 1924, month: 0 },
+        { name: "조선 청년 총동맹", year: 1924, month: 0 },
+        { name: "조선 공산당 조직", year: 1925, month: 0 },
+        { name: "치안유지법(개정 전)", year: 1925, month: 0 },
+        { name: "박은식을 임시 대통령으로 추대", year: 1925, month: 0 },
+        { name: "조선 학생 과학 연구회 설립", year: 1925, month: 0 },
+        { name: "미쓰야 협정", year: 1925, month: 0 },
+        { name: "6·10 만세 운동", year: 1926, month: 6 },
+        { name: "순종 서거", year: 1926, month: 0 },
+        { name: "정우회 선언", year: 1926, month: 0 },
+        { name: "신간회 창립", year: 1927, month: 0 },
+        { name: "조선 농민 총동맹, 조선 노동 총동맹", year: 1927, month: 0 },
+        { name: "조선 공산당 해체", year: 1928, month: 0 },
+        { name: "치안 유지법(개정 후)", year: 1928, month: 0 },
+        { name: "대공황", year: 1929, month: 0 },
+        { name: "3부 통합", year: 1929, month: 0 },
+        { name: "광주 학생 항일 운동", year: 1929, month: 0 },
+        { name: "문자 보급 운동", year: 1929, month: 0 },
+        { name: "만주 사변", year: 1931, month: 0 },
+        { name: "한인 애국단", year: 1931, month: 0 },
+        { name: "신간회 해소", year: 1931, month: 0 },
+        { name: "조선어 학회", year: 1931, month: 0 },
+        { name: "브나로드 운동", year: 1931, month: 0 },
+        { name: "이봉창, 윤봉길 폭탄 투하", year: 1932, month: 0 },
+        { name: "농촌 진흥 운동", year: 1932, month: 0 },
+        { name: "조선 농지령", year: 1934, month: 0 },
+        { name: "조선 민족 혁명당", year: 1935, month: 0 },
+        { name: "한국 국민당", year: 1935, month: 0 },
+        { name: "조선 사상범 보호 관찰령", year: 1936, month: 0 },
+        { name: "중일전쟁", year: 1937, month: 0 },
+        { name: "보천보 전투", year: 1937, month: 0 },
+        { name: "한국 광복 운동 단체 연합회", year: 1937, month: 0 },
+        { name: "조선 교육령 개정", year: 1938, month: 0 },
+        { name: "국민 총동원 조선 연맹(애국반)", year: 1938, month: 0 },
+        { name: "국가 총동원법", year: 1938, month: 0 },
+        { name: "육군 특별 지원병제", year: 1938, month: 0 },
+        { name: "국민 징용령", year: 1939, month: 0 },
+        { name: "제2차 세계 대전", year: 1939, month: 0 },
+        { name: "조선일보, 동아일보 폐간", year: 1940, month: 0 },
+        { name: "한국 독립당 (충칭)", year: 1940, month: 0 },
+        { name: "한국 광복군 창설", year: 1940, month: 0 },
+        { name: "태평양 전쟁", year: 1941, month: 0 },
+        { name: "초등학교 -> 국민학교", year: 1941, month: 0 },
+        { name: "조선 사상범 예방 구금령", year: 1941, month: 0 },
+        { name: "조선 의용대 화북지대", year: 1941, month: 0 },
+        { name: "대한민국 임시 정부(충칭)의 건국 강령", year: 1941, month: 0 },
+        { name: "조선어 학회 사건", year: 1942, month: 0 },
+        { name: "조선 독립 동맹", year: 1942, month: 0 },
+        { name: "조선 독립 동맹의 건국 강령", year: 1942, month: 0 },
+        { name: "학도 지원병제", year: 1943, month: 0 },
+        { name: "카이로 회담", year: 1943, month: 0 },
+        { name: "징병제", year: 1944, month: 0 },
+        { name: "조선 건국 동맹", year: 1944, month: 0 },
+        { name: "조선 건국 동맹의 건국 강령", year: 1944, month: 0 },
+        { name: "얄타 회담", year: 1945, month: 2 },
+        { name: "선거를 통한 통일 정부 수립을 담은 공동 성명서", year: 1945, month: 4 },
+        { name: "포츠담 회담", year: 1945, month: 7 },
+        { name: "소련의 대일전 참전", year: 1945, month: 8 },
+        { name: "모스크바 3국 외상 회의", year: 1945, month: 12 },
+        { name: "광복", year: 1945, month: 0 },
+        { name: "유엔 설립", year: 1945, month: 0 },
+        { name: "제1차 미소 공동 위원회", year: 1946, month: 3 },
+        { name: "이승만의 정읍 발언", year: 1946, month: 6 },
+        { name: "좌우 합작 운동", year: 1946, month: 7 }
+    ];
+
+    let state = {
+        screen: 'menu',
+        questions: [],
+        currentQuestionIndex: 0,
+        score: 0,
+        wrongCounts: {},
+        wrongOnly: false
+    };
+
+    // DOM 요소 캐싱
+    const screens = {
+        menu: document.getElementById('main-menu'),
+        timeline: document.getElementById('timeline-view'),
+        yearSelection: document.getElementById('year-selection-view'),
+        quiz: document.getElementById('quiz-view'),
+        result: document.getElementById('quiz-result-view'),
+        finalScore: document.getElementById('final-score-view'),
+        wrongAnswers: document.getElementById('wrong-answers-view')
+    };
+
+    function showScreen(screenName) {
+        for (const screen in screens) {
+            screens[screen].classList.add('hidden');
+        }
+        screens[screenName].classList.remove('hidden');
+
+        if (screenName === 'timeline') {
+            renderTimeline();
+        } else if (screenName === 'wrongAnswers') {
+            renderWrongAnswers();
+        }
+    }
+
+    // 틀린 연도 목록을 보여주는 기능 추가
+    function showWrongAnswers() {
+        showScreen('wrongAnswers');
+    }
+
+    // 메시지 창을 보여주는 함수
+    function showMessage(message) {
+        document.getElementById('message-text').textContent = message;
+        document.getElementById('message-box').classList.remove('hidden');
+    }
+
+    // 메시지 창을 숨기는 함수
+    function hideMessage() {
+        document.getElementById('message-box').classList.add('hidden');
+    }
+
+
+    function renderTimeline() {
+        const timelineList = document.getElementById('timeline-list');
+        timelineList.innerHTML = events.map((event, index) => {
+            const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+            return `<div class="p-2 bg-gray-700 rounded-lg">
+                        <p class="font-bold">${event.name}</p>
+                        <p class="text-sm text-gray-400">${date}</p>
+                    </div>`;
+        }).join('');
+    }
+
+    function renderWrongAnswers() {
+        loadWrongCounts();
+        const wrongList = document.getElementById('wrong-list');
+        
+        let wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
+
+        if (wrongEvents.length === 0) {
+            wrongList.innerHTML = `<p class="text-center text-gray-400">틀린 문제가 없습니다!</p>`;
+            return;
+        }
+
+        // Add wrongCount to each event object for sorting and display
+        wrongEvents = wrongEvents.map(event => ({
+            ...event,
+            wrongCount: state.wrongCounts[event.name]
+        }));
+        
+        // Now sort correctly based on the new wrongCount property
+        wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); 
+
+        wrongList.innerHTML = wrongEvents.map(event => {
+            const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+            return `<div class="p-2 bg-red-800 rounded-lg">
+                        <p class="font-bold">${event.name}</p>
+                        <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${event.wrongCount}</p>
+                    </div>`;
+        }).join('');
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function showQuizYearSelection(wrongOnly) {
+        state.wrongOnly = wrongOnly;
+        showScreen('yearSelection');
+    }
+
+    function showQuizWrongAnswers() {
+        loadWrongCounts();
+        const wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
+        if (wrongEvents.length === 0) {
+            showMessage('틀린 문제가 없습니다!');
+            return;
+        }
+        state.wrongOnly = true;
+        startQuiz(wrongEvents);
+    }
+
+    function startQuizFromSelection() {
+        const startYear = parseInt(document.getElementById('startYear').value);
+        const endYear = parseInt(document.getElementById('endYear').value);
+
+        if (endYear < startYear) {
+            showMessage('끝 연도는 시작 연도보다 커야 합니다.');
+            return;
+        }
+        
+        let filteredEvents = events.filter(event => event.year >= startYear && event.year < endYear);
+        if (state.wrongOnly) {
+             filteredEvents = filteredEvents.filter(event => state.wrongCounts[event.name] > 0);
+        }
+        
+        if (filteredEvents.length === 0) {
+            showMessage('해당 연도에 맞는 문제가 없습니다.');
+            return;
+        }
+        
+        startQuiz(filteredEvents);
+    }
+
+    function startQuiz(filteredEvents) {
+        state.questions = [...filteredEvents];
+        shuffleArray(state.questions);
+        state.currentQuestionIndex = 0;
+        state.score = 0;
+        
+        document.getElementById('total-questions').textContent = state.questions.length;
+        document.getElementById('correct-count').textContent = state.score;
+
+        showScreen('quiz');
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        if (state.currentQuestionIndex >= state.questions.length) {
+            showFinalScore();
+            return;
+        }
+
+        const currentEvent = state.questions[state.currentQuestionIndex];
+        document.getElementById('event-name').textContent = currentEvent.name;
+        document.getElementById('current-question').textContent = state.currentQuestionIndex + 1;
+        document.getElementById('year-input').value = '';
+        document.getElementById('month-input').value = '';
+        
+        if (currentEvent.month === 0) {
+            document.getElementById('month-input').style.display = 'none';
+        } else {
+            document.getElementById('month-input').style.display = 'block';
+        }
+
+        showScreen('quiz');
+    }
+
+    function checkAnswer() {
+        const currentEvent = state.questions[state.currentQuestionIndex];
+        const yearInput = parseInt(document.getElementById('year-input').value);
+        const monthInput = parseInt(document.getElementById('month-input').value) || 0;
+
+        const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
+
+        const resultText = document.getElementById('result-text');
+        const correctAnswerText = document.getElementById('correct-answer');
+
+        if (isCorrect) {
+            state.score++;
+            document.getElementById('correct-count').textContent = state.score; // 점수 업데이트
+            resultText.textContent = '정답!';
+            resultText.classList.remove('text-red-500');
+            resultText.classList.add('text-green-500');
+            correctAnswerText.textContent = '';
+        } else {
+            resultText.textContent = '오답!';
+            resultText.classList.remove('text-green-500');
+            resultText.classList.add('text-red-500');
+            correctAnswerText.textContent = `정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
+            saveWrongCounts();
+        }
+
+        showScreen('result');
+    }
+
+    function nextQuestion() {
+        state.currentQuestionIndex++;
+        renderQuestion();
+    }
+
+    function showFinalScore() {
+        const finalScoreText = document.getElementById('final-score-text');
+        const totalQuestions = state.questions.length;
+        finalScoreText.textContent = `${totalQuestions} 문제 중 ${state.score} 문제를 맞췄습니다.`;
+        showScreen('finalScore');
+    }
+
+    function saveWrongCounts() {
+        localStorage.setItem('wrongCounts', JSON.stringify(state.wrongCounts));
+    }
+
+    function loadWrongCounts() {
+        const storedCounts = localStorage.getItem('wrongCounts');
+        if (storedCounts) {
+            state.wrongCounts = JSON.parse(storedCounts);
+        } else {
+            state.wrongCounts = {};
+        }
+    }
+
+    // 초기화 및 시작
+    loadWrongCounts();
+    showScreen('menu');
+
+</script>
+</body>
+</html>
