@@ -292,20 +292,28 @@
     function renderWrongAnswers() {
         loadWrongCounts();
         const wrongList = document.getElementById('wrong-list');
+        
         let wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
-        wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); // 틀린 횟수 기준 정렬
 
         if (wrongEvents.length === 0) {
             wrongList.innerHTML = `<p class="text-center text-gray-400">틀린 문제가 없습니다!</p>`;
             return;
         }
 
+        // Add wrongCount to each event object for sorting and display
+        wrongEvents = wrongEvents.map(event => ({
+            ...event,
+            wrongCount: state.wrongCounts[event.name]
+        }));
+        
+        // Now sort correctly based on the new wrongCount property
+        wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); 
+
         wrongList.innerHTML = wrongEvents.map(event => {
             const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
-            const wrongCount = state.wrongCounts[event.name] || 0;
             return `<div class="p-2 bg-red-800 rounded-lg">
                         <p class="font-bold">${event.name}</p>
-                        <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${wrongCount}</p>
+                        <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${event.wrongCount}</p>
                     </div>`;
         }).join('');
     }
@@ -326,7 +334,9 @@
         loadWrongCounts();
         const wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
         if (wrongEvents.length === 0) {
-            alert('틀린 문제가 없습니다!'); // Custom modal needed here
+            // Use a custom modal instead of alert
+            // Placeholder: alert('틀린 문제가 없습니다!'); 
+            showScreen('menu'); // Just go back to menu for now
             return;
         }
         state.wrongOnly = true;
@@ -338,7 +348,7 @@
         const endYear = parseInt(document.getElementById('endYear').value);
 
         if (endYear < startYear) {
-            alert('끝 연도는 시작 연도보다 커야 합니다.'); // Custom modal needed here
+            // Placeholder: alert('끝 연도는 시작 연도보다 커야 합니다.');
             return;
         }
         
@@ -348,7 +358,7 @@
         }
         
         if (filteredEvents.length === 0) {
-            alert('해당 연도에 맞는 문제가 없습니다.'); // Custom modal needed here
+            // Placeholder: alert('해당 연도에 맞는 문제가 없습니다.');
             return;
         }
         
