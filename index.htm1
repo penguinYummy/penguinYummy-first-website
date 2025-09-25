@@ -3,51 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나만의 웹사이트</title>
+    <title>한국사 연도 퀴즈</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            background-color: #f0f4f8; /* 밝은 회색 배경 */
+            background-color: #1a202c; /* 다크 모드 배경 */
+            color: #e2e8f0; /* 밝은 텍스트 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem;
+            background-color: #2d3748; /* 카드 배경 */
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn {
+            background-color: #4a5568;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: #636b77;
+        }
+        .btn-primary {
+            background-color: #4299e1;
+        }
+        .btn-primary:hover {
+            background-color: #3182ce;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .input-box {
+            background-color: #4a5568;
+            border: 1px solid #4a5568;
+            color: #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            width: 100%;
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white p-8 sm:p-12 rounded-2xl shadow-xl max-w-2xl w-full text-center">
-        <!-- 웹사이트의 제목 -->
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4">나만의이트</h1>
-        
-        <!-- 자기소개 문구 -->
-        <p class="text-gray-600 mb-8 sm:mb-10 text-base sm:text-lg">
-            안녕하세요! 이 웹사이트는 제가 직접 만들었어요. 제가 좋아하는 것들을 소개할게요.
-        </p>
-        
-        <!-- 좋아하는 것들 목록 -->
-        <div class="space-y-6 text-left">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">내가 좋아하는 것들</h2>
-            <ul class="space-y-4 text-gray-700">
-                <li class="bg-blue-100 p-4 rounded-lg flex items-center shadow-md">
-                    <span class="mr-3 text-2xl">📚</span>
-                    <span class="text-lg">책 읽기</span>
-                </li>
-                <li class="bg-green-100 p-4 rounded-lg flex items-center shadow-md">
-                    <span class="mr-3 text-2xl">🎮</span>
-                    <span class="text-lg">게임하기</span>
-                </li>
-                <li class="bg-purple-100 p-4 rounded-lg flex items-center shadow-md">
-                    <span class="mr-3 text-2xl">🎶</span>
-                    <span class="text-lg">음악 듣기</span>
-                </li>
-                <li class="bg-red-100 p-4 rounded-lg flex items-center shadow-md">
-                    <span class="mr-3 text-2xl">🍽️</span>
-                    <span class="text-lg">맛있는 음식 먹기</span>
-                </li>
-            </ul>
+<body>
+
+<div id="app" class="container">
+    <div id="main-menu" class="text-center">
+        <h1 class="text-4xl font-bold mb-8">한국사 연도 퀴즈</h1>
+        <div class="space-y-4">
+            <button class="btn w-full text-lg" onclick="showScreen('timeline')">연표 보기</button>
+            <button class="btn w-full text-lg" onclick="showQuizYearSelection(false)">문제 시작</button>
+            <button class="btn w-full text-lg" onclick="showQuizWrongAnswers()">틀린 문제 풀기</button>
+            <button class="btn w-full text-lg" onclick="showWrongAnswers()">틀린 연도 보기</button>
         </div>
     </div>
+
+    <div id="timeline-view" class="hidden">
+        <h2 class="text-2xl font-bold mb-4">전체 연표</h2>
+        <div id="timeline-list" class="space-y-2 max-h-96 overflow-y-auto pr-4"></div>
+        <button class="btn mt-4" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
+    </div>
+
+    <div id="year-selection-view" class="hidden text-center">
+        <h2 class="text-2xl font-bold mb-4">퀴즈 연도 선택</h2>
+        <p class="mb-4">시작 연도와 끝 연도를 선택하세요.</p>
+        <div class="flex justify-around mb-8">
+            <div class="text-center">
+                <label for="startYear" class="block mb-2 text-lg">시작 연도</label>
+                <select id="startYear" class="input-box bg-gray-600 rounded-md">
+                    <option value="1900">1900년대</option>
+                    <option value="1910">1910년대</option>
+                    <option value="1920">1920년대</option>
+                    <option value="1930">1930년대</option>
+                    <option value="1940">1940년대</option>
+                </select>
+            </div>
+            <div class="text-center">
+                <label for="endYear" class="block mb-2 text-lg">끝 연도</label>
+                <select id="endYear" class="input-box bg-gray-600 rounded-md">
+                    <option value="1910">1910년대</option>
+                    <option value="1920">1920년대</option>
+                    <option value="1930">1930년대</option>
+                    <option value="1940">1940년대</option>
+                    <option value="1950">1950년대</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-primary w-full text-lg" onclick="startQuizFromSelection()">퀴즈 시작</button>
+    </div>
+
+    <div id="quiz-view" class="hidden text-center">
+        <div id="quiz-header" class="mb-8">
+            <p class="text-xl">문제 <span id="current-question"></span> / <span id="total-questions"></span></p>
+            <p class="text-xl">맞춘 문제: <span id="correct-count"></span></p>
+        </div>
+        <h3 id="event-name" class="text-3xl font-bold mb-8"></h3>
+        <div class="input-group mb-8 w-full max-w-sm mx-auto">
+            <input type="number" id="year-input" placeholder="연도를 입력하세요 (예: 1919)" class="input-box text-center">
+            <input type="number" id="month-input" placeholder="월을 입력하세요 (선택 사항)" class="input-box text-center">
+        </div>
+        <div class="flex justify-center space-x-4">
+            <button class="btn btn-primary text-lg" onclick="checkAnswer()">정답 확인</button>
+            <button class="btn btn-primary text-lg" onclick="showScreen('menu')">메뉴로 돌아가기</button>
+        </div>
+    </div>
+
+    <div id="quiz-result-view" class="hidden text-center">
+        <h2 id="result-text" class="text-4xl font-bold mb-4"></h2>
+        <p id="correct-answer" class="text-xl mb-8"></p>
+        <button class="btn text-lg" onclick="nextQuestion()">다음 문제</button>
+        <button class="btn text-lg" onclick="showScreen('menu')">메인 메뉴로</button>
+    </div>
+
+    <div id="final-score-view" class="hidden text-center">
+        <h2 class="text-3xl font-bold mb-4">퀴즈 종료</h2>
+        <p id="final-score-text" class="text-2xl mb-8"></p>
+        <button class="btn text-lg" onclick="showScreen('menu')">메인 메뉴로</button>
+    </div>
+
+    <div id="wrong-answers-view" class="hidden">
+        <h2 class="text-2xl font-bold mb-4">틀린 연도 목록</h2>
+        <div id="wrong-list" class="space-y-2 max-h-96 overflow-y-auto pr-4"></div>
+        <button class="btn mt-4" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
+    </div>
+
+</div>
+
+<script>
+    // 전역 변수 및 상태
+    const events = [
+        { name: "한국은행 -> 조선 은행", year: 1909, month: 0 },
+        { name: "회사령", year: 1910, month: 0 },
+        { name: "범죄 즉결레", year: 1910, month: 0 },
+        { name: "토지 조사 사업", year: 1910, month: 0 },
+        { name: "제1차 조선교육령", year: 1911, month: 0 },
+        { name: "삼림령", year: 1911, month: 0 },
+        { name: "조선 태형령", year: 1912, month: 0 },
+        { name: "토지 조사령", year: 1912, month: 0 },
+        { name: "제1차 세계대전", year: 1914, month: 0 },
+        { name: "경원선, 호남선 완공", year: 1914, month: 0 },
+        { name: "임야 조사 사업", year: 1917, month: 0 },
+        { name: "고종 사망", year: 1919, month: 1 },
+        { name: "2·8 독립 선언", year: 1919, month: 2 },
+        { name: "3·1 운동", year: 1919, month: 3 },
+        { name: "대한 국민 의회", year: 1919, month: 3 },
+        { name: "대한민국 임시 헌장", year: 1919, month: 4 },
+        { name: "한성 정부 선포", year: 1919, month: 4 },
+        { name: "대한민국 임시 정부(통합 전)", year: 1919, month: 4 },
+        { name: "대한민국 임시 정부(통합 후)", year: 1919, month: 9 },
+        { name: "대한민국 임시 헌법", year: 1919, month: 9 },
+        { name: "의열단 조직", year: 1919, month: 0 },
+        { name: "봉오동 전투", year: 1920, month: 6 },
+        { name: "청산리 대첩", year: 1920, month: 10 },
+        { name: "간도 참변", year: 1920, month: 10 },
+        { name: "회사령 페지", year: 1920, month: 0 },
+        { name: "산미 증식 계획", year: 1920, month: 0 },
+        { name: "물산 장려 운동", year: 1920, month: 0 },
+        { name: "대한민국 임시 정부 침체", year: 1921, month: 0 },
+        { name: "자유시 참변", year: 1921, month: 0 },
+        { name: "조선어 연구회", year: 1921, month: 0 },
+        { name: "국민 대표 회의", year: 1923, month: 0 },
+        { name: "조선 혁명 선언", year: 1923, month: 0 },
+        { name: "조선 민립 대학 기성회", year: 1923, month: 0 },
+        { name: "관세 폐지", year: 1923, month: 0 },
+        { name: "형평 운동", year: 1923, month = 0 },
+        { name: "경성 제국 대학", year: 1924, month: 0 },
+        { name: "조선 노농 총동맹", year: 1924, month: 0 },
+        { name: "조선 청년 총동맹", year: 1924, month: 0 },
+        { name: "조선 공산당 조직", year: 1925, month: 0 },
+        { name: "치안유지법(개정 전)", year: 1925, month: 0 },
+        { name: "박은식을 임시 대통령으로 추대", year: 1925, month: 0 },
+        { name: "조선 학생 과학 연구회 설립", year: 1925, month: 0 },
+        { name: "미쓰야 협정", year: 1925, month: 0 },
+        { name: "6·10 만세 운동", year: 1926, month: 6 },
+        { name: "순종 서거", year: 1926, month: 0 },
+        { name: "정우회 선언", year: 1926, month: 0 },
+        { name: "신간회 창립", year: 1927, month: 0 },
+        { name: "조선 농민 총동맹, 조선 노동 총동맹", year: 1927, month: 0 },
+        { name: "조선 공산당 해체", year: 1928, month: 0 },
+        { name: "치안 유지법(개정 후)", year: 1928, month: 0 },
+        { name: "대공황", year: 1929, month: 0 },
+        { name: "3부 통합", year: 1929, month: 0 },
+        { name: "광주 학생 항일 운동", year: 1929, month: 0 },
+        { name: "문자 보급 운동", year: 1929, month: 0 },
+        { name: "만주 사변", year: 1931, month: 0 },
+        { name: "한인 애국단", year: 1931, month: 0 },
+        { name: "신간회 해소", year: 1931, month: 0 },
+        { name: "조선어 학회", year: 1931, month: 0 },
+        { name: "브나로드 운동", year: 1931, month: 0 },
+        { name: "이봉창, 윤봉길 폭탄 투하", year: 1932, month: 0 },
+        { name: "농촌 진흥 운동", year: 1932, month: 0 },
+        { name: "조선 농지령", year: 1934, month: 0 },
+        { name: "조선 민족 혁명당", year: 1935, month: 0 },
+        { name: "한국 국민당", year: 1935, month: 0 },
+        { name: "조선 사상범 보호 관찰령", year: 1936, month: 0 },
+        { name: "중일전쟁", year: 1937, month: 0 },
+        { name: "보천보 전투", year: 1937, month: 0 },
+        { name: "한국 광복 운동 단체 연합회", year: 1937, month: 0 },
+        { name: "조선 교육령 개정", year: 1938, month: 0 },
+        { name: "국민 총동원 조선 연맹(애국반)", year: 1938, month: 0 },
+        { name: "국가 총동원법", year: 1938, month: 0 },
+        { name: "육군 특별 지원병제", year: 1938, month: 0 },
+        { name: "국민 징용령", year: 1939, month: 0 },
+        { name: "제2차 세계 대전", year: 1939, month: 0 },
+        { name: "조선일보, 동아일보 폐간", year: 1940, month: 0 },
+        { name: "한국 독립당 (충칭)", year: 1940, month: 0 },
+        { name: "한국 광복군 창설", year: 1940, month: 0 },
+        { name: "태평양 전쟁", year: 1941, month: 0 },
+        { name: "초등학교 -> 국민학교", year: 1941, month: 0 },
+        { name: "조선 사상범 예방 구금령", year: 1941, month: 0 },
+        { name: "조선 의용대 화북지대", year: 1941, month: 0 },
+        { name: "대한민국 임시 정부(충칭)의 건국 강령", year: 1941, month: 0 },
+        { name: "조선어 학회 사건", year: 1942, month: 0 },
+        { name: "조선 독립 동맹", year: 1942, month: 0 },
+        { name: "조선 독립 동맹의 건국 강령", year: 1942, month: 0 },
+        { name: "학도 지원병제", year: 1943, month: 0 },
+        { name: "카이로 회담", year: 1943, month: 0 },
+        { name: "징병제", year: 1944, month: 0 },
+        { name: "조선 건국 동맹", year: 1944, month: 0 },
+        { name: "조선 건국 동맹의 건국 강령", year: 1944, month: 0 },
+        { name: "얄타 회담", year: 1945, month: 2 },
+        { name: "선거를 통한 통일 정부 수립을 담은 공동 성명서", year: 1945, month: 4 },
+        { name: "포츠담 회담", year: 1945, month: 7 },
+        { name: "소련의 대일전 참전", year: 1945, month: 8 },
+        { name: "모스크바 3국 외상 회의", year: 1945, month: 12 },
+        { name: "광복", year: 1945, month: 0 },
+        { name: "유엔 설립", year: 1945, month: 0 },
+        { name: "제1차 미소 공동 위원회", year: 1946, month: 3 },
+        { name: "이승만의 정읍 발언", year: 1946, month: 6 },
+        { name: "좌우 합작 운동", year: 1946, month: 7 }
+    ];
+
+    let state = {
+        screen: 'menu',
+        questions: [],
+        currentQuestionIndex: 0,
+        score: 0,
+        wrongCounts: {},
+        wrongOnly: false
+    };
+
+    // DOM 요소 캐싱
+    const screens = {
+        menu: document.getElementById('main-menu'),
+        timeline: document.getElementById('timeline-view'),
+        yearSelection: document.getElementById('year-selection-view'),
+        quiz: document.getElementById('quiz-view'),
+        result: document.getElementById('quiz-result-view'),
+        finalScore: document.getElementById('final-score-view'),
+        wrongAnswers: document.getElementById('wrong-answers-view')
+    };
+
+    function showScreen(screenName) {
+        for (const screen in screens) {
+            screens[screen].classList.add('hidden');
+        }
+        screens[screenName].classList.remove('hidden');
+
+        if (screenName === 'timeline') {
+            renderTimeline();
+        } else if (screenName === 'wrongAnswers') {
+            renderWrongAnswers();
+        }
+    }
+
+    function renderTimeline() {
+        const timelineList = document.getElementById('timeline-list');
+        timelineList.innerHTML = events.map((event, index) => {
+            const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+            return `<div class="p-2 bg-gray-700 rounded-lg">
+                        <p class="font-bold">${event.name}</p>
+                        <p class="text-sm text-gray-400">${date}</p>
+                    </div>`;
+        }).join('');
+    }
+
+    function renderWrongAnswers() {
+        loadWrongCounts();
+        const wrongList = document.getElementById('wrong-list');
+        let wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
+        wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); // 틀린 횟수 기준 정렬
+
+        if (wrongEvents.length === 0) {
+            wrongList.innerHTML = `<p class="text-center text-gray-400">틀린 문제가 없습니다!</p>`;
+            return;
+        }
+
+        wrongList.innerHTML = wrongEvents.map(event => {
+            const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+            const wrongCount = state.wrongCounts[event.name] || 0;
+            return `<div class="p-2 bg-red-800 rounded-lg">
+                        <p class="font-bold">${event.name}</p>
+                        <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${wrongCount}</p>
+                    </div>`;
+        }).join('');
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function showQuizYearSelection(wrongOnly) {
+        state.wrongOnly = wrongOnly;
+        showScreen('yearSelection');
+    }
+
+    function showQuizWrongAnswers() {
+        loadWrongCounts();
+        const wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
+        if (wrongEvents.length === 0) {
+            alert('틀린 문제가 없습니다!'); // Custom modal needed here
+            return;
+        }
+        state.wrongOnly = true;
+        startQuiz(wrongEvents);
+    }
+
+    function startQuizFromSelection() {
+        const startYear = parseInt(document.getElementById('startYear').value);
+        const endYear = parseInt(document.getElementById('endYear').value);
+
+        if (endYear < startYear) {
+            alert('끝 연도는 시작 연도보다 커야 합니다.'); // Custom modal needed here
+            return;
+        }
+        
+        let filteredEvents = events.filter(event => event.year >= startYear && event.year < endYear);
+        if (state.wrongOnly) {
+             filteredEvents = filteredEvents.filter(event => state.wrongCounts[event.name] > 0);
+        }
+        
+        if (filteredEvents.length === 0) {
+            alert('해당 연도에 맞는 문제가 없습니다.'); // Custom modal needed here
+            return;
+        }
+        
+        startQuiz(filteredEvents);
+    }
+
+    function startQuiz(filteredEvents) {
+        state.questions = [...filteredEvents];
+        shuffleArray(state.questions);
+        state.currentQuestionIndex = 0;
+        state.score = 0;
+        
+        document.getElementById('total-questions').textContent = state.questions.length;
+        document.getElementById('correct-count').textContent = state.score;
+
+        showScreen('quiz');
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        if (state.currentQuestionIndex >= state.questions.length) {
+            showFinalScore();
+            return;
+        }
+
+        const currentEvent = state.questions[state.currentQuestionIndex];
+        document.getElementById('event-name').textContent = currentEvent.name;
+        document.getElementById('current-question').textContent = state.currentQuestionIndex + 1;
+        document.getElementById('year-input').value = '';
+        document.getElementById('month-input').value = '';
+        
+        if (currentEvent.month === 0) {
+            document.getElementById('month-input').style.display = 'none';
+        } else {
+            document.getElementById('month-input').style.display = 'block';
+        }
+
+        showScreen('quiz');
+    }
+
+    function checkAnswer() {
+        const currentEvent = state.questions[state.currentQuestionIndex];
+        const yearInput = parseInt(document.getElementById('year-input').value);
+        const monthInput = parseInt(document.getElementById('month-input').value) || 0;
+
+        const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
+
+        const resultText = document.getElementById('result-text');
+        const correctAnswerText = document.getElementById('correct-answer');
+
+        if (isCorrect) {
+            state.score++;
+            resultText.textContent = '정답!';
+            resultText.classList.remove('text-red-500');
+            resultText.classList.add('text-green-500');
+            correctAnswerText.textContent = '';
+        } else {
+            resultText.textContent = '오답!';
+            resultText.classList.remove('text-green-500');
+            resultText.classList.add('text-red-500');
+            correctAnswerText.textContent = `정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
+            saveWrongCounts();
+        }
+
+        showScreen('result');
+    }
+
+    function nextQuestion() {
+        state.currentQuestionIndex++;
+        renderQuestion();
+    }
+
+    function showFinalScore() {
+        const finalScoreText = document.getElementById('final-score-text');
+        const totalQuestions = state.questions.length;
+        finalScoreText.textContent = `${totalQuestions} 문제 중 ${state.score} 문제를 맞췄습니다.`;
+        showScreen('finalScore');
+    }
+
+    function saveWrongCounts() {
+        localStorage.setItem('wrongCounts', JSON.stringify(state.wrongCounts));
+    }
+
+    function loadWrongCounts() {
+        const storedCounts = localStorage.getItem('wrongCounts');
+        if (storedCounts) {
+            state.wrongCounts = JSON.parse(storedCounts);
+        } else {
+            state.wrongCounts = {};
+        }
+    }
+
+    // 초기화 및 시작
+    loadWrongCounts();
+    showScreen('menu');
+
+</script>
 </body>
 </html>
-
