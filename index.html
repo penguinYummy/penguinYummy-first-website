@@ -194,6 +194,7 @@
         { name: "경성 제국 대학", year: 1924, month: 0 },
         { name: "조선 노농 총동맹", year: 1924, month: 0 },
         { name: "조선 청년 총동맹", year: 1924, month: 0 },
+        { name: "제1차 국공합작", year: 1924, month: 0 },
         { name: "조선 공산당 조직", year: 1925, month: 0 },
         { name: "치안유지법(개정 전)", year: 1925, month: 0 },
         { name: "박은식을 임시 대통령으로 추대", year: 1925, month: 0 },
@@ -206,6 +207,7 @@
         { name: "조선 농민 총동맹, 조선 노동 총동맹", year: 1927, month: 0 },
         { name: "조선 공산당 해체", year: 1928, month: 0 },
         { name: "치안 유지법(개정 후)", year: 1928, month: 0 },
+        { name: "원산 총파업", year: 1929, month: 0 },
         { name: "대공황", year: 1929, month: 0 },
         { name: "3부 통합", year: 1929, month: 0 },
         { name: "광주 학생 항일 운동", year: 1929, month: 0 },
@@ -247,15 +249,24 @@
         { name: "조선 건국 동맹", year: 1944, month: 0 },
         { name: "조선 건국 동맹의 건국 강령", year: 1944, month: 0 },
         { name: "얄타 회담", year: 1945, month: 2 },
-        { name: "선거를 통한 통일 정부 수립을 담은 공동 성명서", year: 1948, month: 4 },
         { name: "포츠담 회담", year: 1945, month: 7 },
         { name: "소련의 대일전 참전", year: 1945, month: 8 },
         { name: "모스크바 3국 외상 회의", year: 1945, month: 12 },
         { name: "광복", year: 1945, month: 0 },
         { name: "유엔 설립", year: 1945, month: 0 },
-        { name: "제1차 미소 공동 위원회", year: 1946, month: 3 },
+        { name: "제 1차 미소 공동 위원회 개최", year: 1946, month: 3 },
+        { name: "제 1차 미소 공동 위원회 결렬", year: 1946, month: 5 },
         { name: "이승만의 정읍 발언", year: 1946, month: 6 },
-        { name: "좌우 합작 운동", year: 1946, month: 7 }
+        { name: "좌우 합작 운동", year: 1946, month: 7 },
+        { name: "좌우 합작 위원회 결성", year: 1946, month: 7 },
+        { name: "트루먼 독트린 발표", year: 1947, month: 3 },
+        { name: "제 2차 미소 공동 위원회 개최", year: 1947, month: 5 },
+        { name: "한반도 문제가 유엔으로 이관", year: 1947, month: 9 },
+        { name: "제 2차 미소 공동 위원회 결렬", year: 1947, month: 10 },
+        { name: "한반도 총선거 실시 결정", year: 1947, month: 11 },
+        { name: "남한만의 단독 선거 실시 결정", year: 1948, month: 2 },
+        { name: "김구의 남북 협상", year: 1948, month: 4 },
+        { name: "선거를 통한 통일 정부 수립을 담은 공동 성명서", year: 1948, month: 4 }
     ];
 
     let state = {
@@ -312,6 +323,14 @@
         const timelineList = document.getElementById('timeline-list');
         const normalizedSearchTerm = searchTerm.toLowerCase().trim();
         
+        // 이스터에그 기능
+        if (normalizedSearchTerm === '박찬일') {
+            timelineList.innerHTML = `<div class="p-4 bg-yellow-600 rounded-lg text-center font-bold text-xl">
+                박찬일 님의 미소는 1946년에 시작되었습니다.
+            </div>`;
+            return;
+        }
+
         const filteredEvents = normalizedSearchTerm ? events.filter(event => 
             event.name.toLowerCase().includes(normalizedSearchTerm) || 
             String(event.year).includes(normalizedSearchTerm)
