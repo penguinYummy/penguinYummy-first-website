@@ -54,6 +54,19 @@
             border-radius: 0.5rem;
             width: 100%;
         }
+        #result-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        .correct-bg {
+            background-color: #10B981; /* green-500 */
+        }
+        .wrong-bg {
+            background-color: #EF4444; /* red-500 */
+        }
     </style>
 </head>
 <body>
@@ -71,6 +84,9 @@
 
     <div id="timeline-view" class="hidden">
         <h2 class="text-2xl font-bold mb-4">전체 연표</h2>
+        <div class="mb-4">
+            <input type="text" id="timeline-search" placeholder="연도나 이름으로 검색..." class="input-box bg-gray-600 rounded-md">
+        </div>
         <div id="timeline-list" class="space-y-2 max-h-96 overflow-y-auto pr-4"></div>
         <button class="btn mt-4" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
     </div>
@@ -104,26 +120,22 @@
     </div>
 
     <div id="quiz-view" class="hidden text-center">
-        <div id="quiz-header" class="mb-8">
-            <p class="text-xl">문제 <span id="current-question"></span> / <span id="total-questions"></span></p>
-            <p class="text-xl">맞춘 문제: <span id="correct-count"></span></p>
+        <div class="flex justify-between items-start w-full mb-8">
+            <div id="quiz-header">
+                <p class="text-xl">문제 <span id="current-question"></span> / <span id="total-questions"></span></p>
+                <p class="text-xl">맞춘 문제: <span id="correct-count"></span></p>
+            </div>
+            <button class="btn text-sm px-4 py-2" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
         </div>
         <h3 id="event-name" class="text-3xl font-bold mb-8"></h3>
         <div class="input-group mb-8 w-full max-w-sm mx-auto">
             <input type="number" id="year-input" placeholder="연도를 입력하세요 (예: 1919)" class="input-box text-center">
             <input type="number" id="month-input" placeholder="월을 입력하세요 (선택 사항)" class="input-box text-center">
         </div>
-        <div class="flex justify-center space-x-4">
-            <button class="btn btn-primary text-lg" onclick="checkAnswer()">정답 확인</button>
-            <button class="btn btn-primary text-lg" onclick="showScreen('menu')">메뉴로 돌아가기</button>
+        <div id="quiz-actions" class="flex justify-center space-x-4">
+            <!-- 동적으로 생성되는 버튼 영역 -->
         </div>
-    </div>
-
-    <div id="quiz-result-view" class="hidden text-center">
-        <h2 id="result-text" class="text-4xl font-bold mb-4"></h2>
-        <p id="correct-answer" class="text-xl mb-8"></p>
-        <button class="btn text-lg" onclick="nextQuestion()">다음 문제</button>
-        <button class="btn text-lg" onclick="showScreen('menu')">메인 메뉴로</button>
+        <div id="result-message" class="hidden"></div>
     </div>
 
     <div id="final-score-view" class="hidden text-center">
@@ -135,10 +147,22 @@
     <div id="wrong-answers-view" class="hidden">
         <h2 class="text-2xl font-bold mb-4">틀린 연도 목록</h2>
         <div id="wrong-list" class="space-y-2 max-h-96 overflow-y-auto pr-4"></div>
-        <button class="btn mt-4" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
+        <div class="flex flex-col sm:flex-row space-y-2 sm:space-x-4 sm:space-y-0 mt-4">
+            <button class="btn flex-1" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
+            <button class="btn btn-primary bg-red-500 hover:bg-red-600 flex-1" onclick="resetWrongCounts()">틀린 연도 초기화</button>
+        </div>
     </div>
 
 </div>
+
+<!-- Custom Message Box -->
+<div id="message-box" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden z-50">
+    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-center">
+        <p id="message-text" class="text-xl mb-4"></p>
+        <button class="btn" onclick="hideMessage()">확인</button>
+    </div>
+</div>
+
 
 <script>
     // 전역 변수 및 상태
@@ -176,11 +200,13 @@
         { name: "국민 대표 회의", year: 1923, month: 0 },
         { name: "조선 혁명 선언", year: 1923, month: 0 },
         { name: "조선 민립 대학 기성회", year: 1923, month: 0 },
+        { name: "암태도 소작쟁의", year: 1923, month: 0 },
         { name: "관세 폐지", year: 1923, month: 0 },
-        { name: "형평 운동", year: 1923, month = 0 },
+        { name: "형평 운동", year: 1923, month: 0 },
         { name: "경성 제국 대학", year: 1924, month: 0 },
         { name: "조선 노농 총동맹", year: 1924, month: 0 },
         { name: "조선 청년 총동맹", year: 1924, month: 0 },
+        { name: "제1차 국공합작", year: 1924, month: 0 },
         { name: "조선 공산당 조직", year: 1925, month: 0 },
         { name: "치안유지법(개정 전)", year: 1925, month: 0 },
         { name: "박은식을 임시 대통령으로 추대", year: 1925, month: 0 },
@@ -193,6 +219,8 @@
         { name: "조선 농민 총동맹, 조선 노동 총동맹", year: 1927, month: 0 },
         { name: "조선 공산당 해체", year: 1928, month: 0 },
         { name: "치안 유지법(개정 후)", year: 1928, month: 0 },
+        { name: "함경선", year: 1928, month: 0 },
+        { name: "원산 총파업", year: 1929, month: 0 },
         { name: "대공황", year: 1929, month: 0 },
         { name: "3부 통합", year: 1929, month: 0 },
         { name: "광주 학생 항일 운동", year: 1929, month: 0 },
@@ -234,15 +262,24 @@
         { name: "조선 건국 동맹", year: 1944, month: 0 },
         { name: "조선 건국 동맹의 건국 강령", year: 1944, month: 0 },
         { name: "얄타 회담", year: 1945, month: 2 },
-        { name: "선거를 통한 통일 정부 수립을 담은 공동 성명서", year: 1945, month: 4 },
         { name: "포츠담 회담", year: 1945, month: 7 },
         { name: "소련의 대일전 참전", year: 1945, month: 8 },
         { name: "모스크바 3국 외상 회의", year: 1945, month: 12 },
         { name: "광복", year: 1945, month: 0 },
         { name: "유엔 설립", year: 1945, month: 0 },
-        { name: "제1차 미소 공동 위원회", year: 1946, month: 3 },
+        { name: "제 1차 미소 공동 위원회 개최", year: 1946, month: 3 },
+        { name: "제 1차 미소 공동 위원회 결렬", year: 1946, month: 5 },
         { name: "이승만의 정읍 발언", year: 1946, month: 6 },
-        { name: "좌우 합작 운동", year: 1946, month: 7 }
+        { name: "좌우 합작 운동", year: 1946, month: 7 },
+        { name: "좌우 합작 위원회 결성", year: 1946, month: 7 },
+        { name: "트루먼 독트린 발표", year: 1947, month: 3 },
+        { name: "제 2차 미소 공동 위원회 개최", year: 1947, month: 5 },
+        { name: "한반도 문제가 유엔으로 이관", year: 1947, month: 9 },
+        { name: "제 2차 미소 공동 위원회 결렬", year: 1947, month: 10 },
+        { name: "한반도 총선거 실시 결정", year: 1947, month: 11 },
+        { name: "남한만의 단독 선거 실시 결정", year: 1948, month: 2 },
+        { name: "김구의 남북 협상", year: 1948, month: 4 },
+        { name: "선거를 통한 통일 정부 수립을 담은 공동 성명서", year: 1948, month: 4 }
     ];
 
     let state = {
@@ -260,7 +297,6 @@
         timeline: document.getElementById('timeline-view'),
         yearSelection: document.getElementById('year-selection-view'),
         quiz: document.getElementById('quiz-view'),
-        result: document.getElementById('quiz-result-view'),
         finalScore: document.getElementById('final-score-view'),
         wrongAnswers: document.getElementById('wrong-answers-view')
     };
@@ -272,15 +308,53 @@
         screens[screenName].classList.remove('hidden');
 
         if (screenName === 'timeline') {
+            document.getElementById('timeline-search').value = '';
             renderTimeline();
         } else if (screenName === 'wrongAnswers') {
             renderWrongAnswers();
         }
     }
 
-    function renderTimeline() {
+    // 틀린 연도 목록을 보여주는 기능 추가
+    function showWrongAnswers() {
+        showScreen('wrongAnswers');
+    }
+
+    // 메시지 창을 보여주는 함수
+    function showMessage(message) {
+        document.getElementById('message-text').textContent = message;
+        document.getElementById('message-box').classList.remove('hidden');
+    }
+
+    // 메시지 창을 숨기는 함수
+    function hideMessage() {
+        document.getElementById('message-box').classList.add('hidden');
+    }
+
+    function renderTimeline(searchTerm = '') {
         const timelineList = document.getElementById('timeline-list');
-        timelineList.innerHTML = events.map((event, index) => {
+        const normalizedSearchTerm = searchTerm.toLowerCase().trim();
+        
+        let eventsToRender;
+        if (normalizedSearchTerm === '박찬일') {
+            eventsToRender = events.filter(event => event.name.includes('미소'));
+        } else if (normalizedSearchTerm === '곽승헌') {
+            eventsToRender = events.filter(event => event.name.includes('태형'));
+        } else if (normalizedSearchTerm === '노무현') {
+            eventsToRender = events.filter(event => event.year === 1946);
+        } else {
+            eventsToRender = normalizedSearchTerm ? events.filter(event => 
+                event.name.toLowerCase().includes(normalizedSearchTerm) || 
+                String(event.year).includes(normalizedSearchTerm)
+            ) : events;
+        }
+
+        if (eventsToRender.length === 0) {
+            timelineList.innerHTML = `<p class="text-center text-gray-400">검색 결과가 없습니다.</p>`;
+            return;
+        }
+        
+        timelineList.innerHTML = eventsToRender.map((event, index) => {
             const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
             return `<div class="p-2 bg-gray-700 rounded-lg">
                         <p class="font-bold">${event.name}</p>
@@ -292,22 +366,38 @@
     function renderWrongAnswers() {
         loadWrongCounts();
         const wrongList = document.getElementById('wrong-list');
+        
         let wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
-        wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); // 틀린 횟수 기준 정렬
 
         if (wrongEvents.length === 0) {
             wrongList.innerHTML = `<p class="text-center text-gray-400">틀린 문제가 없습니다!</p>`;
             return;
         }
 
+        // Add wrongCount to each event object for sorting and display
+        wrongEvents = wrongEvents.map(event => ({
+            ...event,
+            wrongCount: state.wrongCounts[event.name]
+        }));
+        
+        // Now sort correctly based on the new wrongCount property
+        wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); 
+
         wrongList.innerHTML = wrongEvents.map(event => {
             const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
-            const wrongCount = state.wrongCounts[event.name] || 0;
             return `<div class="p-2 bg-red-800 rounded-lg">
                         <p class="font-bold">${event.name}</p>
-                        <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${wrongCount}</p>
+                        <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${event.wrongCount}</p>
                     </div>`;
         }).join('');
+    }
+
+    // 틀린 횟수를 초기화하는 함수 추가
+    function resetWrongCounts() {
+        state.wrongCounts = {};
+        saveWrongCounts();
+        renderWrongAnswers();
+        showMessage('틀린 연도 기록이 모두 초기화되었습니다!');
     }
 
     function shuffleArray(array) {
@@ -326,7 +416,7 @@
         loadWrongCounts();
         const wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
         if (wrongEvents.length === 0) {
-            alert('틀린 문제가 없습니다!'); // Custom modal needed here
+            showMessage('틀린 문제가 없습니다!');
             return;
         }
         state.wrongOnly = true;
@@ -338,7 +428,7 @@
         const endYear = parseInt(document.getElementById('endYear').value);
 
         if (endYear < startYear) {
-            alert('끝 연도는 시작 연도보다 커야 합니다.'); // Custom modal needed here
+            showMessage('끝 연도는 시작 연도보다 커야 합니다.');
             return;
         }
         
@@ -348,7 +438,7 @@
         }
         
         if (filteredEvents.length === 0) {
-            alert('해당 연도에 맞는 문제가 없습니다.'); // Custom modal needed here
+            showMessage('해당 연도에 맞는 문제가 없습니다.');
             return;
         }
         
@@ -386,40 +476,50 @@
             document.getElementById('month-input').style.display = 'block';
         }
 
-        showScreen('quiz');
+        // 결과 메시지 초기화
+        const resultMessage = document.getElementById('result-message');
+        resultMessage.classList.add('hidden');
+        resultMessage.classList.remove('correct-bg', 'wrong-bg');
+
+        // 기존의 '다음 문제' 버튼이 있다면 제거
+        const quizActions = document.getElementById('quiz-actions');
+        quizActions.innerHTML = '';
     }
 
     function checkAnswer() {
         const currentEvent = state.questions[state.currentQuestionIndex];
         const yearInput = parseInt(document.getElementById('year-input').value);
         const monthInput = parseInt(document.getElementById('month-input').value) || 0;
+        const resultMessage = document.getElementById('result-message');
 
         const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
 
-        const resultText = document.getElementById('result-text');
-        const correctAnswerText = document.getElementById('correct-answer');
-
         if (isCorrect) {
             state.score++;
-            resultText.textContent = '정답!';
-            resultText.classList.remove('text-red-500');
-            resultText.classList.add('text-green-500');
-            correctAnswerText.textContent = '';
+            document.getElementById('correct-count').textContent = state.score;
+            resultMessage.textContent = '정답입니다!';
+            resultMessage.classList.add('correct-bg');
         } else {
-            resultText.textContent = '오답!';
-            resultText.classList.remove('text-green-500');
-            resultText.classList.add('text-red-500');
-            correctAnswerText.textContent = `정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            resultMessage.classList.add('wrong-bg');
             state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
             saveWrongCounts();
         }
 
-        showScreen('result');
-    }
+        resultMessage.classList.remove('hidden');
 
-    function nextQuestion() {
-        state.currentQuestionIndex++;
-        renderQuestion();
+        // '다음 문제' 버튼 생성
+        const quizActions = document.getElementById('quiz-actions');
+        quizActions.innerHTML = ''; // 기존 버튼 제거
+        const nextBtn = document.createElement('button');
+        nextBtn.id = 'next-question-btn';
+        nextBtn.className = 'btn btn-primary text-lg';
+        nextBtn.textContent = '다음 문제';
+        nextBtn.onclick = () => {
+            state.currentQuestionIndex++;
+            renderQuestion();
+        };
+        quizActions.appendChild(nextBtn);
     }
 
     function showFinalScore() {
@@ -441,6 +541,22 @@
             state.wrongCounts = {};
         }
     }
+
+    // Add event listener for the search input
+    document.getElementById('timeline-search').addEventListener('input', (e) => {
+        renderTimeline(e.target.value);
+    });
+    
+    // 연도 입력 필드에 키보드 이벤트 리스너 추가
+    document.getElementById('year-input').addEventListener('keypress', function(event) {
+        // 엔터 키(Enter)가 눌렸는지 확인
+        if (event.key === 'Enter') {
+            // 기본 엔터 동작(폼 제출)을 막음
+            event.preventDefault(); 
+            // 정답 확인 함수 호출
+            checkAnswer();
+        }
+    });
 
     // 초기화 및 시작
     loadWrongCounts();
