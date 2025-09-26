@@ -76,7 +76,7 @@
         }
         /* Adjusted wrong-answer item background color */
         .wrong-item-bg {
-            background-color: #7f1d1d; /* red-900 -> red-700 (softer) */
+            background-color: #7f1d1d; /* red-700 (softer) */
         }
     </style>
 </head>
@@ -144,8 +144,7 @@
             <input type="number" id="month-input" placeholder="월을 입력하세요 (선택 사항)" class="input-box text-center">
         </div>
         <div id="quiz-actions" class="flex justify-center space-x-4">
-            <!-- 동적으로 생성되는 버튼 영역 -->
-        </div>
+            </div>
         <div id="result-message" class="hidden"></div>
     </div>
 
@@ -166,7 +165,6 @@
 
 </div>
 
-<!-- Custom Message Box -->
 <div id="message-box" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden z-50">
     <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-center">
         <p id="message-text" class="text-xl mb-4"></p>
@@ -324,6 +322,8 @@
         } else if (screenName === 'wrongAnswers') {
             renderWrongAnswers();
         } else if (screenName === 'quiz') {
+            // 초기 퀴즈 화면 진입 시에도 포커스 설정
+            // 다음 문제로 넘어가는 것은 renderQuestion에서 처리됩니다.
             document.getElementById('year-input').focus();
         }
     }
@@ -396,9 +396,10 @@
         // Now sort correctly based on the new wrongCount property
         wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); 
 
+        // ✨ 틀린 문제 목록에 `wrong-item-bg` 클래스 적용
         wrongList.innerHTML = wrongEvents.map(event => {
             const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
-            return `<div class="p-2 bg-red-800 rounded-lg">
+            return `<div class="p-2 wrong-item-bg rounded-lg">
                         <p class="font-bold">${event.name}</p>
                         <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${event.wrongCount}</p>
                     </div>`;
@@ -471,7 +472,7 @@
         renderQuestion();
     }
 
-function renderQuestion() {
+    function renderQuestion() {
         if (state.currentQuestionIndex >= state.questions.length) {
             showFinalScore();
             return;
@@ -499,6 +500,7 @@ function renderQuestion() {
         const quizActions = document.getElementById('quiz-actions');
         quizActions.innerHTML = ''; 
         
+        // ✨ 다음 문제로 넘어갈 때 무조건 년도 입력 필드에 포커스를 맞춥니다.
         document.getElementById('year-input').focus();
     }
 
