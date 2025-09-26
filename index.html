@@ -88,8 +88,11 @@
         <div class="space-y-4">
             <button class="btn w-full text-lg" onclick="showScreen('timeline')">연표 보기</button>
             <button class="btn w-full text-lg" onclick="showQuizYearSelection(false)">문제 시작</button>
+            <!-- 모든 문제로 랭킹 등록 퀴즈 시작 버튼 추가 -->
+            <button class="btn btn-primary w-full text-lg" onclick="startAllQuizForRanking()">모든 문제 퀴즈 시작 (랭킹 등록)</button>
             <button class="btn w-full text-lg" onclick="showQuizWrongAnswers()">틀린 문제 풀기</button>
             <button class="btn w-full text-lg" onclick="showWrongAnswers()">틀린 연도 보기</button>
+            <button class="btn w-full text-lg" onclick="showRanking()">랭킹 보기</button>
         </div>
     </div>
 
@@ -163,6 +166,14 @@
             <button class="btn btn-primary bg-red-500 hover:bg-red-600 flex-1" onclick="resetWrongCounts()">틀린 연도 초기화</button>
         </div>
     </div>
+    
+    <!-- New Ranking View -->
+    <div id="ranking-view" class="hidden">
+        <h2 class="text-2xl font-bold mb-4">랭킹</h2>
+        <p class="text-sm text-gray-400 mb-4">사용자 ID의 앞 8자리가 표시됩니다.</p>
+        <div id="ranking-list" class="space-y-2 max-h-96 overflow-y-auto pr-4"></div>
+        <button class="btn mt-4" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
+    </div>
 
 </div>
 
@@ -174,8 +185,13 @@
     </div>
 </div>
 
+<!-- Firebase JS SDK CDN -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, addDoc, setDoc, deleteDoc, collection, query, where, getDocs, serverTimestamp, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-<script>
     // 전역 변수 및 상태
     const events = [
         { name: "한국은행 -> 조선 은행", year: 1909, month: 0 },
@@ -303,6 +319,13 @@
         canPressSpace: false
     };
 
+    // Firebase 전역 변수
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    let app, auth, db;
+    let userId;
+    let isAuthReady = false;
+
     // DOM 요소 캐싱
     const screens = {
         menu: document.getElementById('main-menu'),
@@ -310,11 +333,157 @@
         yearSelection: document.getElementById('year-selection-view'),
         quiz: document.getElementById('quiz-view'),
         finalScore: document.getElementById('final-score-view'),
-        wrongAnswers: document.getElementById('wrong-answers-view')
+        wrongAnswers: document.getElementById('wrong-answers-view'),
+        ranking: document.getElementById('ranking-view')
     };
     const yearInput = document.getElementById('year-input');
     const monthInput = document.getElementById('month-input');
+    
+    // Firebase 초기화 및 인증
+    async function initFirebase() {
+        setLogLevel('debug');
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
 
+        // 인증 상태 변화를 감지하여 사용자 ID 설정 및 데이터 로드
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                isAuthReady = true;
+                await loadWrongCountsFromFirestore();
+                console.log("Firebase initialized and user signed in:", userId);
+            } else {
+                // 토큰이 없으면 익명으로 로그인 시도
+                try {
+                    await signInAnonymously(auth);
+                } catch (error) {
+                    console.error("Anonymous sign-in failed:", error);
+                }
+            }
+        });
+        
+        // 커스텀 인증 토큰이 있으면 사용
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            try {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } catch (error) {
+                console.error("Custom token sign-in failed:", error);
+                await signInAnonymously(auth);
+            }
+        }
+    }
+
+    // Firestore에 오답 횟수 저장
+    async function saveWrongCountsToFirestore() {
+        if (!isAuthReady || !userId) return;
+        try {
+            const wrongAnswersDocRef = doc(db, `artifacts/${appId}/users/${userId}/wrong_answers/data`);
+            await setDoc(wrongAnswersDocRef, { counts: state.wrongCounts });
+        } catch (e) {
+            console.error("Error saving wrong counts: ", e);
+        }
+    }
+
+    // Firestore에서 오답 횟수 불러오기
+    async function loadWrongCountsFromFirestore() {
+        if (!isAuthReady || !userId) return;
+        try {
+            const wrongAnswersDocRef = doc(db, `artifacts/${appId}/users/${userId}/wrong_answers/data`);
+            const docSnap = await getDoc(wrongAnswersDocRef);
+            if (docSnap.exists()) {
+                state.wrongCounts = docSnap.data().counts || {};
+            } else {
+                state.wrongCounts = {};
+            }
+        } catch (e) {
+            console.error("Error loading wrong counts: ", e);
+        }
+    }
+
+    // 오답 횟수 초기화
+    async function resetWrongCounts() {
+        if (!isAuthReady || !userId) {
+            showMessage('사용자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+            return;
+        }
+        try {
+            const wrongAnswersDocRef = doc(db, `artifacts/${appId}/users/${userId}/wrong_answers/data`);
+            await deleteDoc(wrongAnswersDocRef);
+            state.wrongCounts = {};
+            renderWrongAnswers();
+            showMessage('틀린 연도 기록이 모두 초기화되었습니다!');
+        } catch (e) {
+            console.error("Error resetting wrong counts: ", e);
+            showMessage('기록 초기화에 실패했습니다.');
+        }
+    }
+
+    // Firestore에 점수 저장
+    async function saveScoreToFirestore(score) {
+        if (!isAuthReady || !userId) {
+            console.error("Cannot save score: Auth not ready or userId is missing.");
+            return;
+        }
+        try {
+            const scoresCollectionRef = collection(db, `artifacts/${appId}/public/data/scores`);
+            await addDoc(scoresCollectionRef, {
+                userId: userId,
+                score: score,
+                timestamp: serverTimestamp()
+            });
+            console.log("Score saved to Firestore.");
+        } catch (e) {
+            console.error("Error adding score document: ", e);
+        }
+    }
+
+    // 랭킹 보여주기
+    async function showRanking() {
+        if (!isAuthReady) {
+            showMessage("데이터를 불러오는 중입니다. 잠시만 기다려주세요.");
+            return;
+        }
+        showScreen('ranking');
+        const rankingList = document.getElementById('ranking-list');
+        rankingList.innerHTML = `<div class="text-center text-gray-400">랭킹을 불러오는 중...</div>`;
+
+        try {
+            const scoresCollectionRef = collection(db, `artifacts/${appId}/public/data/scores`);
+            const querySnapshot = await getDocs(scoresCollectionRef);
+
+            const userScores = {};
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const user = data.userId;
+                const score = data.score;
+                if (!userScores[user] || score > userScores[user]) {
+                    userScores[user] = score;
+                }
+            });
+
+            const sortedScores = Object.entries(userScores)
+                                        .sort(([, a], [, b]) => b - a)
+                                        .map(([userId, score]) => ({ userId, score }));
+
+            if (sortedScores.length === 0) {
+                rankingList.innerHTML = `<p class="text-center text-gray-400">아직 등록된 랭킹이 없습니다.</p>`;
+            } else {
+                const rankingHtml = sortedScores.map((entry, index) => {
+                    return `<div class="p-2 bg-gray-700 rounded-lg flex justify-between items-center">
+                                <span>${index + 1}. ${entry.userId.substring(0, 8)}...</span>
+                                <span class="font-bold">${entry.score}점</span>
+                            </div>`;
+                }).join('');
+                rankingList.innerHTML = rankingHtml;
+            }
+        } catch (e) {
+            console.error("Error fetching ranking: ", e);
+            rankingList.innerHTML = `<p class="text-center text-red-400">랭킹을 불러오는데 실패했습니다.</p>`;
+        }
+    }
+    
+    // 화면 전환 함수
     function showScreen(screenName) {
         for (const screen in screens) {
             screens[screen].classList.add('hidden');
@@ -329,18 +498,15 @@
         }
     }
 
-    // 틀린 연도 목록을 보여주는 기능 추가
     function showWrongAnswers() {
         showScreen('wrongAnswers');
     }
 
-    // 메시지 창을 보여주는 함수
     function showMessage(message) {
         document.getElementById('message-text').textContent = message;
         document.getElementById('message-box').classList.remove('hidden');
     }
 
-    // 메시지 창을 숨기는 함수
     function hideMessage() {
         document.getElementById('message-box').classList.add('hidden');
     }
@@ -378,7 +544,6 @@
     }
 
     function renderWrongAnswers() {
-        loadWrongCounts();
         const wrongList = document.getElementById('wrong-list');
         
         let wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
@@ -388,13 +553,11 @@
             return;
         }
 
-        // Add wrongCount to each event object for sorting and display
         wrongEvents = wrongEvents.map(event => ({
             ...event,
             wrongCount: state.wrongCounts[event.name]
         }));
         
-        // Now sort correctly based on the new wrongCount property
         wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); 
 
         wrongList.innerHTML = wrongEvents.map(event => {
@@ -404,14 +567,6 @@
                         <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${event.wrongCount}</p>
                     </div>`;
         }).join('');
-    }
-
-    // 틀린 횟수를 초기화하는 함수 추가
-    function resetWrongCounts() {
-        state.wrongCounts = {};
-        saveWrongCounts();
-        renderWrongAnswers();
-        showMessage('틀린 연도 기록이 모두 초기화되었습니다!');
     }
 
     function shuffleArray(array) {
@@ -427,7 +582,6 @@
     }
 
     function showQuizWrongAnswers() {
-        loadWrongCounts();
         const wrongEvents = events.filter(event => state.wrongCounts[event.name] > 0);
         if (wrongEvents.length === 0) {
             showMessage('틀린 문제가 없습니다!');
@@ -435,6 +589,12 @@
         }
         state.wrongOnly = true;
         startQuiz(wrongEvents);
+    }
+    
+    // 새로운 랭킹 퀴즈 시작 함수
+    function startAllQuizForRanking() {
+        state.wrongOnly = false; // 모든 문제 포함
+        startQuiz(events); // 모든 이벤트 목록으로 퀴즈 시작
     }
 
     function startQuizFromSelection() {
@@ -459,22 +619,8 @@
         startQuiz(filteredEvents);
     }
 
-    function startQuiz(filteredEvents) {
-        state.questions = [...filteredEvents];
-        shuffleArray(state.questions);
-        state.currentQuestionIndex = 0;
-        state.score = 0;
-        
-        document.getElementById('total-questions').textContent = state.questions.length;
-        document.getElementById('correct-count').textContent = state.score;
-
-        showScreen('quiz');
-        renderQuestion();
-    }
-    
-    // 다음 문제로 넘어가는 공통 함수
     function goToNextQuestion() {
-        state.canPressSpace = false; // 스페이스바 기능 비활성화
+        state.canPressSpace = false;
 
         state.currentQuestionIndex++;
         if (state.currentQuestionIndex >= state.questions.length) {
@@ -485,7 +631,7 @@
     }
 
     function renderQuestion() {
-        state.canPressSpace = false; // 스페이스바 기능 비활성화
+        state.canPressSpace = false;
 
         const currentEvent = state.questions[state.currentQuestionIndex];
         document.getElementById('event-name').textContent = currentEvent.name;
@@ -507,12 +653,10 @@
 
         yearInput.focus();
 
-        // 결과 메시지 초기화
         const resultMessage = document.getElementById('result-message');
         resultMessage.classList.add('hidden');
         resultMessage.classList.remove('correct-bg', 'wrong-bg');
 
-        // 기존의 '다음 문제' 버튼이 있다면 제거
         const quizActions = document.getElementById('quiz-actions');
         quizActions.innerHTML = '';
     }
@@ -534,15 +678,14 @@
             resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
             resultMessage.classList.add('wrong-bg');
             state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
-            saveWrongCounts();
+            saveWrongCountsToFirestore();
         }
 
         resultMessage.classList.remove('hidden');
-        state.canPressSpace = true; // 정답 확인 후 스페이스바 기능 활성화
+        state.canPressSpace = true;
 
-        // '다음 문제' 버튼 생성
         const quizActions = document.getElementById('quiz-actions');
-        quizActions.innerHTML = ''; // 기존 버튼 제거
+        quizActions.innerHTML = '';
         const nextBtn = document.createElement('button');
         nextBtn.id = 'next-question-btn';
         nextBtn.className = 'btn btn-primary text-lg';
@@ -551,24 +694,13 @@
         quizActions.appendChild(nextBtn);
     }
 
-    function showFinalScore() {
+    async function showFinalScore() {
         const finalScoreText = document.getElementById('final-score-text');
         const totalQuestions = state.questions.length;
         finalScoreText.textContent = `${totalQuestions} 문제 중 ${state.score} 문제를 맞췄습니다.`;
+        
+        await saveScoreToFirestore(state.score);
         showScreen('finalScore');
-    }
-
-    function saveWrongCounts() {
-        localStorage.setItem('wrongCounts', JSON.stringify(state.wrongCounts));
-    }
-
-    function loadWrongCounts() {
-        const storedCounts = localStorage.getItem('wrongCounts');
-        if (storedCounts) {
-            state.wrongCounts = JSON.parse(storedCounts);
-        } else {
-            state.wrongCounts = {};
-        }
     }
 
     function handleYearEnter(event) {
@@ -592,7 +724,6 @@
         }
     }
 
-    // 스페이스바를 눌렀을 때 다음 문제로 넘어가는 기능
     document.addEventListener('keyup', (event) => {
         if (event.key === ' ' && state.canPressSpace) {
             event.preventDefault();
@@ -600,13 +731,12 @@
         }
     });
 
-    // Add event listener for the search input
     document.getElementById('timeline-search').addEventListener('input', (e) => {
         renderTimeline(e.target.value);
     });
     
     // 초기화 및 시작
-    loadWrongCounts();
+    initFirebase();
     showScreen('menu');
 
 </script>
