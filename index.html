@@ -8,8 +8,8 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* 다크 모드 배경 */
-            color: #e2e8f0; /* 밝은 텍스트 */
+            background-color: #1a202c; /* Dark mode background */
+            color: #e2e8f0; /* Light text */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,7 +19,7 @@
             width: 100%;
             max-width: 800px;
             padding: 2rem;
-            background-color: #2d3748; /* 카드 배경 */
+            background-color: #2d3748; /* Card background */
             border-radius: 1rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
@@ -53,6 +53,13 @@
             padding: 0.5rem;
             border-radius: 0.5rem;
             width: 100%;
+            -moz-appearance: textfield; /* Firefox */
+        }
+        /* Remove number input arrows for Webkit browsers (Chrome, Safari, etc.) */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
         #result-message {
             margin-top: 1rem;
@@ -66,6 +73,10 @@
         }
         .wrong-bg {
             background-color: #EF4444; /* red-500 */
+        }
+        /* Adjusted wrong-answer item background color */
+        .wrong-item-bg {
+            background-color: #7f1d1d; /* red-900 -> red-700 (softer) */
         }
     </style>
 </head>
@@ -312,6 +323,8 @@
             renderTimeline();
         } else if (screenName === 'wrongAnswers') {
             renderWrongAnswers();
+        } else if (screenName === 'quiz') {
+            document.getElementById('year-input').focus();
         }
     }
 
@@ -470,6 +483,7 @@
         document.getElementById('year-input').value = '';
         document.getElementById('month-input').value = '';
         
+        // 월이 없는 문제인 경우 월 입력란 숨기기
         if (currentEvent.month === 0) {
             document.getElementById('month-input').style.display = 'none';
         } else {
@@ -483,7 +497,7 @@
 
         // 기존의 '다음 문제' 버튼이 있다면 제거
         const quizActions = document.getElementById('quiz-actions');
-        quizActions.innerHTML = '';
+        quizActions.innerHTML = ''; 
     }
 
     function checkAnswer() {
@@ -491,6 +505,9 @@
         const yearInput = parseInt(document.getElementById('year-input').value);
         const monthInput = parseInt(document.getElementById('month-input').value) || 0;
         const resultMessage = document.getElementById('result-message');
+        const isAnswered = document.getElementById('next-question-btn');
+
+        if (isAnswered) return;
 
         const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
 
@@ -510,11 +527,10 @@
 
         // '다음 문제' 버튼 생성
         const quizActions = document.getElementById('quiz-actions');
-        quizActions.innerHTML = ''; // 기존 버튼 제거
         const nextBtn = document.createElement('button');
         nextBtn.id = 'next-question-btn';
         nextBtn.className = 'btn btn-primary text-lg';
-        nextBtn.textContent = '다음 문제';
+        nextBtn.textContent = '다음 문제(space)';
         nextBtn.onclick = () => {
             state.currentQuestionIndex++;
             renderQuestion();
@@ -542,22 +558,40 @@
         }
     }
 
+    // 연도 입력 필드에 키보드 이벤트 리스너 추가 (엔터 키 누르면 월 입력란으로 이동)
+    document.getElementById('year-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            const currentEvent = state.questions[state.currentQuestionIndex];
+            if (currentEvent.month !== 0) {
+                event.preventDefault();
+                document.getElementById('month-input').focus();
+            } else {
+                checkAnswer();
+            }
+        }
+    });
+
+    // 월 입력 필드에 키보드 이벤트 리스너 추가 (엔터 키 누르면 답안 확인)
+    document.getElementById('month-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+    
+    // 전체 문서에 키보드 이벤트 리스너 추가 (스페이스바 누르면 다음 문제로)
+    document.addEventListener('keydown', function(event) {
+        const nextBtn = document.getElementById('next-question-btn');
+        if (event.key === ' ' && nextBtn) {
+            event.preventDefault();
+            nextBtn.click();
+        }
+    });
+
     // Add event listener for the search input
     document.getElementById('timeline-search').addEventListener('input', (e) => {
         renderTimeline(e.target.value);
     });
     
-    // 연도 입력 필드에 키보드 이벤트 리스너 추가
-    document.getElementById('year-input').addEventListener('keypress', function(event) {
-        // 엔터 키(Enter)가 눌렸는지 확인
-        if (event.key === 'Enter') {
-            // 기본 엔터 동작(폼 제출)을 막음
-            event.preventDefault(); 
-            // 정답 확인 함수 호출
-            checkAnswer();
-        }
-    });
-
     // 초기화 및 시작
     loadWrongCounts();
     showScreen('menu');
@@ -565,4 +599,3 @@
 </script>
 </body>
 </html>
-
