@@ -471,7 +471,7 @@
         renderQuestion();
     }
 
-  function renderQuestion() {
+function renderQuestion() {
         if (state.currentQuestionIndex >= state.questions.length) {
             showFinalScore();
             return;
@@ -498,31 +498,8 @@
         // 기존의 '다음 문제' 버튼이 있다면 제거
         const quizActions = document.getElementById('quiz-actions');
         quizActions.innerHTML = ''; 
-    
-        document.getElementById('year-input').focus();
-    }
-
-        const currentEvent = state.questions[state.currentQuestionIndex];
-        document.getElementById('event-name').textContent = currentEvent.name;
-        document.getElementById('current-question').textContent = state.currentQuestionIndex + 1;
-        document.getElementById('year-input').value = '';
-        document.getElementById('month-input').value = '';
         
-        // 월이 없는 문제인 경우 월 입력란 숨기기
-        if (currentEvent.month === 0) {
-            document.getElementById('month-input').style.display = 'none';
-        } else {
-            document.getElementById('month-input').style.display = 'block';
-        }
-
-        // 결과 메시지 초기화
-        const resultMessage = document.getElementById('result-message');
-        resultMessage.classList.add('hidden');
-        resultMessage.classList.remove('correct-bg', 'wrong-bg');
-
-        // 기존의 '다음 문제' 버튼이 있다면 제거
-        const quizActions = document.getElementById('quiz-actions');
-        quizActions.innerHTML = ''; 
+        document.getElementById('year-input').focus();
     }
 
     function checkAnswer() {
