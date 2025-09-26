@@ -207,6 +207,7 @@
         { name: "조선 농민 총동맹, 조선 노동 총동맹", year: 1927, month: 0 },
         { name: "조선 공산당 해체", year: 1928, month: 0 },
         { name: "치안 유지법(개정 후)", year: 1928, month: 0 },
+        { name: "함경선", year: 1928, month: 0 },
         { name: "원산 총파업", year: 1929, month: 0 },
         { name: "대공황", year: 1929, month: 0 },
         { name: "3부 통합", year: 1929, month: 0 },
@@ -462,66 +463,3 @@
     function checkAnswer() {
         const currentEvent = state.questions[state.currentQuestionIndex];
         const yearInput = parseInt(document.getElementById('year-input').value);
-        const monthInput = parseInt(document.getElementById('month-input').value) || 0;
-
-        const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
-
-        const resultText = document.getElementById('result-text');
-        const correctAnswerText = document.getElementById('correct-answer');
-
-        if (isCorrect) {
-            state.score++;
-            document.getElementById('correct-count').textContent = state.score; // 점수 업데이트
-            resultText.textContent = '정답!';
-            resultText.classList.remove('text-red-500');
-            resultText.classList.add('text-green-500');
-            correctAnswerText.textContent = '';
-        } else {
-            resultText.textContent = '오답!';
-            resultText.classList.remove('text-green-500');
-            resultText.classList.add('text-red-500');
-            correctAnswerText.textContent = `정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
-            state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
-            saveWrongCounts();
-        }
-
-        showScreen('result');
-    }
-
-    function nextQuestion() {
-        state.currentQuestionIndex++;
-        renderQuestion();
-    }
-
-    function showFinalScore() {
-        const finalScoreText = document.getElementById('final-score-text');
-        const totalQuestions = state.questions.length;
-        finalScoreText.textContent = `${totalQuestions} 문제 중 ${state.score} 문제를 맞췄습니다.`;
-        showScreen('finalScore');
-    }
-
-    function saveWrongCounts() {
-        localStorage.setItem('wrongCounts', JSON.stringify(state.wrongCounts));
-    }
-
-    function loadWrongCounts() {
-        const storedCounts = localStorage.getItem('wrongCounts');
-        if (storedCounts) {
-            state.wrongCounts = JSON.parse(storedCounts);
-        } else {
-            state.wrongCounts = {};
-        }
-    }
-
-    // Add event listener for the search input
-    document.getElementById('timeline-search').addEventListener('input', (e) => {
-        renderTimeline(e.target.value);
-    });
-
-    // 초기화 및 시작
-    loadWrongCounts();
-    showScreen('menu');
-
-</script>
-</body>
-</html>
