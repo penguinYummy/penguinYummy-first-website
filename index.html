@@ -54,6 +54,19 @@
             border-radius: 0.5rem;
             width: 100%;
         }
+        #result-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        .correct-bg {
+            background-color: #10B981; /* green-500 */
+        }
+        .wrong-bg {
+            background-color: #EF4444; /* red-500 */
+        }
     </style>
 </head>
 <body>
@@ -118,15 +131,9 @@
         </div>
         <div class="flex justify-center space-x-4">
             <button class="btn btn-primary text-lg" onclick="checkAnswer()">정답 확인</button>
-            <button class="btn btn-primary text-lg" onclick="showScreen('menu')">메뉴로 돌아가기</button>
+            <button class="btn text-lg" onclick="showScreen('menu')">메뉴로 돌아가기</button>
         </div>
-    </div>
-
-    <div id="quiz-result-view" class="hidden text-center">
-        <h2 id="result-text" class="text-4xl font-bold mb-4"></h2>
-        <p id="correct-answer" class="text-xl mb-8"></p>
-        <button class="btn text-lg" onclick="nextQuestion()">다음 문제</button>
-        <button class="btn text-lg" onclick="showScreen('menu')">메인 메뉴로</button>
+        <div id="result-message" class="hidden"></div>
     </div>
 
     <div id="final-score-view" class="hidden text-center">
@@ -288,7 +295,6 @@
         timeline: document.getElementById('timeline-view'),
         yearSelection: document.getElementById('year-selection-view'),
         quiz: document.getElementById('quiz-view'),
-        result: document.getElementById('quiz-result-view'),
         finalScore: document.getElementById('final-score-view'),
         wrongAnswers: document.getElementById('wrong-answers-view')
     };
@@ -468,41 +474,59 @@
             document.getElementById('month-input').style.display = 'block';
         }
 
-        showScreen('quiz');
+        // 결과 메시지 초기화
+        const resultMessage = document.getElementById('result-message');
+        resultMessage.classList.add('hidden');
+        resultMessage.classList.remove('correct-bg', 'wrong-bg');
+
+        const quizButtons = document.querySelectorAll('#quiz-view .btn');
+        quizButtons.forEach(btn => btn.removeEventListener('click', nextQuestion));
     }
 
     function checkAnswer() {
         const currentEvent = state.questions[state.currentQuestionIndex];
         const yearInput = parseInt(document.getElementById('year-input').value);
         const monthInput = parseInt(document.getElementById('month-input').value) || 0;
+        const resultMessage = document.getElementById('result-message');
 
         const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
 
-        const resultText = document.getElementById('result-text');
-        const correctAnswerText = document.getElementById('correct-answer');
-
         if (isCorrect) {
             state.score++;
-            document.getElementById('correct-count').textContent = state.score; // 점수 업데이트
-            resultText.textContent = '정답!';
-            resultText.classList.remove('text-red-500');
-            resultText.classList.add('text-green-500');
-            correctAnswerText.textContent = '';
+            document.getElementById('correct-count').textContent = state.score;
+            resultMessage.textContent = '정답입니다!';
+            resultMessage.classList.add('correct-bg');
+            resultMessage.classList.remove('hidden');
+
+            // 정답인 경우 1초 후에 다음 문제로 자동 이동
+            setTimeout(() => {
+                state.currentQuestionIndex++;
+                renderQuestion();
+            }, 1000);
+
         } else {
-            resultText.textContent = '오답!';
-            resultText.classList.remove('text-green-500');
-            resultText.classList.add('text-red-500');
-            correctAnswerText.textContent = `정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            resultMessage.classList.add('wrong-bg');
+            resultMessage.classList.remove('hidden');
             state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
             saveWrongCounts();
+
+            // '다음 문제' 버튼 생성
+            const quizView = document.getElementById('quiz-view');
+            let nextBtn = document.getElementById('next-question-btn');
+            if (!nextBtn) {
+                nextBtn = document.createElement('button');
+                nextBtn.id = 'next-question-btn';
+                nextBtn.className = 'btn text-lg mt-4';
+                nextBtn.textContent = '다음 문제';
+                nextBtn.onclick = () => {
+                    state.currentQuestionIndex++;
+                    renderQuestion();
+                    nextBtn.remove();
+                };
+                quizView.appendChild(nextBtn);
+            }
         }
-
-        showScreen('result');
-    }
-
-    function nextQuestion() {
-        state.currentQuestionIndex++;
-        renderQuestion();
     }
 
     function showFinalScore() {
@@ -528,6 +552,17 @@
     // Add event listener for the search input
     document.getElementById('timeline-search').addEventListener('input', (e) => {
         renderTimeline(e.target.value);
+    });
+    
+    // 연도 입력 필드에 키보드 이벤트 리스너 추가
+    document.getElementById('year-input').addEventListener('keypress', function(event) {
+        // 엔터 키(Enter)가 눌렸는지 확인
+        if (event.key === 'Enter') {
+            // 기본 엔터 동작(폼 제출)을 막음
+            event.preventDefault(); 
+            // 정답 확인 함수 호출
+            checkAnswer();
+        }
     });
 
     // 초기화 및 시작
