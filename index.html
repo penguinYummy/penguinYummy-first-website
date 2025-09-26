@@ -71,6 +71,9 @@
 
     <div id="timeline-view" class="hidden">
         <h2 class="text-2xl font-bold mb-4">전체 연표</h2>
+        <div class="mb-4">
+            <input type="text" id="timeline-search" placeholder="연도나 이름으로 검색..." class="input-box bg-gray-600 rounded-md">
+        </div>
         <div id="timeline-list" class="space-y-2 max-h-96 overflow-y-auto pr-4"></div>
         <button class="btn mt-4" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
     </div>
@@ -282,6 +285,7 @@
         screens[screenName].classList.remove('hidden');
 
         if (screenName === 'timeline') {
+            document.getElementById('timeline-search').value = '';
             renderTimeline();
         } else if (screenName === 'wrongAnswers') {
             renderWrongAnswers();
@@ -304,10 +308,16 @@
         document.getElementById('message-box').classList.add('hidden');
     }
 
-
-    function renderTimeline() {
+    function renderTimeline(searchTerm = '') {
         const timelineList = document.getElementById('timeline-list');
-        timelineList.innerHTML = events.map((event, index) => {
+        const normalizedSearchTerm = searchTerm.toLowerCase().trim();
+        
+        const filteredEvents = normalizedSearchTerm ? events.filter(event => 
+            event.name.toLowerCase().includes(normalizedSearchTerm) || 
+            String(event.year).includes(normalizedSearchTerm)
+        ) : events;
+        
+        timelineList.innerHTML = filteredEvents.map((event, index) => {
             const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
             return `<div class="p-2 bg-gray-700 rounded-lg">
                         <p class="font-bold">${event.name}</p>
@@ -477,6 +487,11 @@
             state.wrongCounts = {};
         }
     }
+
+    // Add event listener for the search input
+    document.getElementById('timeline-search').addEventListener('input', (e) => {
+        renderTimeline(e.target.value);
+    });
 
     // 초기화 및 시작
     loadWrongCounts();
