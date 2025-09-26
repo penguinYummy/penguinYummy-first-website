@@ -288,7 +288,8 @@
         currentQuestionIndex: 0,
         score: 0,
         wrongCounts: {},
-        wrongOnly: false
+        wrongOnly: false,
+        canPressSpace: false
     };
 
     // DOM 요소 캐싱
@@ -300,6 +301,8 @@
         finalScore: document.getElementById('final-score-view'),
         wrongAnswers: document.getElementById('wrong-answers-view')
     };
+    const yearInput = document.getElementById('year-input');
+    const monthInput = document.getElementById('month-input');
 
     function showScreen(screenName) {
         for (const screen in screens) {
@@ -457,8 +460,16 @@
         showScreen('quiz');
         renderQuestion();
     }
+    
+    // 다음 문제로 넘어가는 공통 함수
+    function goToNextQuestion() {
+        state.currentQuestionIndex++;
+        renderQuestion();
+    }
 
     function renderQuestion() {
+        state.canPressSpace = false; // 스페이스바 기능 비활성화
+
         if (state.currentQuestionIndex >= state.questions.length) {
             showFinalScore();
             return;
@@ -467,13 +478,19 @@
         const currentEvent = state.questions[state.currentQuestionIndex];
         document.getElementById('event-name').textContent = currentEvent.name;
         document.getElementById('current-question').textContent = state.currentQuestionIndex + 1;
-        document.getElementById('year-input').value = '';
-        document.getElementById('month-input').value = '';
+        yearInput.value = '';
+        monthInput.value = '';
         
-        if (currentEvent.month === 0) {
-            document.getElementById('month-input').style.display = 'none';
+        if (currentEvent.month !== 0) {
+            monthInput.style.display = 'block';
+            yearInput.removeEventListener('keypress', handleYearEnter);
+            monthInput.addEventListener('keypress', handleMonthEnter);
+            yearInput.focus();
         } else {
-            document.getElementById('month-input').style.display = 'block';
+            monthInput.style.display = 'none';
+            monthInput.removeEventListener('keypress', handleMonthEnter);
+            yearInput.addEventListener('keypress', handleYearEnter);
+            yearInput.focus();
         }
 
         // 결과 메시지 초기화
@@ -488,25 +505,26 @@
 
     function checkAnswer() {
         const currentEvent = state.questions[state.currentQuestionIndex];
-        const yearInput = parseInt(document.getElementById('year-input').value);
-        const monthInput = parseInt(document.getElementById('month-input').value) || 0;
+        const yearInputVal = parseInt(yearInput.value);
+        const monthInputVal = parseInt(monthInput.value) || 0;
         const resultMessage = document.getElementById('result-message');
 
-        const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
+        const isCorrect = yearInputVal === currentEvent.year && (currentEvent.month === 0 || monthInputVal === currentEvent.month);
 
         if (isCorrect) {
             state.score++;
             document.getElementById('correct-count').textContent = state.score;
-            resultMessage.textContent = '정답입니다!';
+            resultMessage.textContent = '정답입니다! (Space)';
             resultMessage.classList.add('correct-bg');
         } else {
-            resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'} (Space)`;
             resultMessage.classList.add('wrong-bg');
             state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
             saveWrongCounts();
         }
 
         resultMessage.classList.remove('hidden');
+        state.canPressSpace = true; // 정답 확인 후 스페이스바 기능 활성화
 
         // '다음 문제' 버튼 생성
         const quizActions = document.getElementById('quiz-actions');
@@ -514,11 +532,8 @@
         const nextBtn = document.createElement('button');
         nextBtn.id = 'next-question-btn';
         nextBtn.className = 'btn btn-primary text-lg';
-        nextBtn.textContent = '다음 문제';
-        nextBtn.onclick = () => {
-            state.currentQuestionIndex++;
-            renderQuestion();
-        };
+        nextBtn.textContent = '다음 문제 (Space)';
+        nextBtn.onclick = goToNextQuestion;
         quizActions.appendChild(nextBtn);
     }
 
@@ -542,22 +557,33 @@
         }
     }
 
+    function handleYearEnter(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); 
+            checkAnswer();
+        }
+    }
+
+    function handleMonthEnter(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            checkAnswer();
+        }
+    }
+
+    // 스페이스바를 눌렀을 때 다음 문제로 넘어가는 기능
+    document.addEventListener('keyup', (event) => {
+        if (event.key === ' ' && state.canPressSpace) {
+            event.preventDefault();
+            goToNextQuestion();
+        }
+    });
+
     // Add event listener for the search input
     document.getElementById('timeline-search').addEventListener('input', (e) => {
         renderTimeline(e.target.value);
     });
     
-    // 연도 입력 필드에 키보드 이벤트 리스너 추가
-    document.getElementById('year-input').addEventListener('keypress', function(event) {
-        // 엔터 키(Enter)가 눌렸는지 확인
-        if (event.key === 'Enter') {
-            // 기본 엔터 동작(폼 제출)을 막음
-            event.preventDefault(); 
-            // 정답 확인 함수 호출
-            checkAnswer();
-        }
-    });
-
     // 초기화 및 시작
     loadWrongCounts();
     showScreen('menu');
