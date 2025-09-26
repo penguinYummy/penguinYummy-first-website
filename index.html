@@ -120,18 +120,20 @@
     </div>
 
     <div id="quiz-view" class="hidden text-center">
-        <div id="quiz-header" class="mb-8">
-            <p class="text-xl">문제 <span id="current-question"></span> / <span id="total-questions"></span></p>
-            <p class="text-xl">맞춘 문제: <span id="correct-count"></span></p>
+        <div class="flex justify-between items-start w-full mb-8">
+            <div id="quiz-header">
+                <p class="text-xl">문제 <span id="current-question"></span> / <span id="total-questions"></span></p>
+                <p class="text-xl">맞춘 문제: <span id="correct-count"></span></p>
+            </div>
+            <button class="btn text-sm px-4 py-2" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
         </div>
         <h3 id="event-name" class="text-3xl font-bold mb-8"></h3>
         <div class="input-group mb-8 w-full max-w-sm mx-auto">
             <input type="number" id="year-input" placeholder="연도를 입력하세요 (예: 1919)" class="input-box text-center">
             <input type="number" id="month-input" placeholder="월을 입력하세요 (선택 사항)" class="input-box text-center">
         </div>
-        <div class="flex justify-center space-x-4">
-            <button class="btn btn-primary text-lg" onclick="checkAnswer()">정답 확인</button>
-            <button class="btn text-lg" onclick="showScreen('menu')">메뉴로 돌아가기</button>
+        <div id="quiz-actions" class="flex justify-center space-x-4">
+            <!-- 동적으로 생성되는 버튼 영역 -->
         </div>
         <div id="result-message" class="hidden"></div>
     </div>
@@ -479,8 +481,9 @@
         resultMessage.classList.add('hidden');
         resultMessage.classList.remove('correct-bg', 'wrong-bg');
 
-        const quizButtons = document.querySelectorAll('#quiz-view .btn');
-        quizButtons.forEach(btn => btn.removeEventListener('click', nextQuestion));
+        // 기존의 '다음 문제' 버튼이 있다면 제거
+        const quizActions = document.getElementById('quiz-actions');
+        quizActions.innerHTML = '';
     }
 
     function checkAnswer() {
@@ -496,37 +499,27 @@
             document.getElementById('correct-count').textContent = state.score;
             resultMessage.textContent = '정답입니다!';
             resultMessage.classList.add('correct-bg');
-            resultMessage.classList.remove('hidden');
-
-            // 정답인 경우 1초 후에 다음 문제로 자동 이동
-            setTimeout(() => {
-                state.currentQuestionIndex++;
-                renderQuestion();
-            }, 1000);
-
         } else {
             resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
             resultMessage.classList.add('wrong-bg');
-            resultMessage.classList.remove('hidden');
             state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
             saveWrongCounts();
-
-            // '다음 문제' 버튼 생성
-            const quizView = document.getElementById('quiz-view');
-            let nextBtn = document.getElementById('next-question-btn');
-            if (!nextBtn) {
-                nextBtn = document.createElement('button');
-                nextBtn.id = 'next-question-btn';
-                nextBtn.className = 'btn text-lg mt-4';
-                nextBtn.textContent = '다음 문제';
-                nextBtn.onclick = () => {
-                    state.currentQuestionIndex++;
-                    renderQuestion();
-                    nextBtn.remove();
-                };
-                quizView.appendChild(nextBtn);
-            }
         }
+
+        resultMessage.classList.remove('hidden');
+
+        // '다음 문제' 버튼 생성
+        const quizActions = document.getElementById('quiz-actions');
+        quizActions.innerHTML = ''; // 기존 버튼 제거
+        const nextBtn = document.createElement('button');
+        nextBtn.id = 'next-question-btn';
+        nextBtn.className = 'btn btn-primary text-lg';
+        nextBtn.textContent = '다음 문제';
+        nextBtn.onclick = () => {
+            state.currentQuestionIndex++;
+            renderQuestion();
+        };
+        quizActions.appendChild(nextBtn);
     }
 
     function showFinalScore() {
