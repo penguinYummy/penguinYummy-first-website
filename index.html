@@ -53,6 +53,13 @@
             padding: 0.5rem;
             border-radius: 0.5rem;
             width: 100%;
+            -moz-appearance: textfield; /* Firefox */
+        }
+        /* Remove number input arrows for Webkit browsers (Chrome, Safari, etc.) */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
         #result-message {
             margin-top: 1rem;
@@ -467,17 +474,18 @@
     
     // 다음 문제로 넘어가는 공통 함수
     function goToNextQuestion() {
+        state.canPressSpace = false; // 스페이스바 기능 비활성화
+
         state.currentQuestionIndex++;
-        renderQuestion();
+        if (state.currentQuestionIndex >= state.questions.length) {
+            showFinalScore();
+        } else {
+            renderQuestion();
+        }
     }
 
     function renderQuestion() {
         state.canPressSpace = false; // 스페이스바 기능 비활성화
-
-        if (state.currentQuestionIndex >= state.questions.length) {
-            showFinalScore();
-            return;
-        }
 
         const currentEvent = state.questions[state.currentQuestionIndex];
         document.getElementById('event-name').textContent = currentEvent.name;
@@ -489,13 +497,15 @@
             monthInput.style.display = 'block';
             yearInput.removeEventListener('keypress', handleYearEnter);
             monthInput.addEventListener('keypress', handleMonthEnter);
-            yearInput.focus();
+            yearInput.addEventListener('keypress', handleYearEnterToMonth);
         } else {
             monthInput.style.display = 'none';
-            monthInput.removeEventListener('keypress', handleMonthEnter);
+            yearInput.removeEventListener('keypress', handleYearEnterToMonth);
             yearInput.addEventListener('keypress', handleYearEnter);
-            yearInput.focus();
+            monthInput.removeEventListener('keypress', handleMonthEnter);
         }
+
+        yearInput.focus();
 
         // 결과 메시지 초기화
         const resultMessage = document.getElementById('result-message');
@@ -521,7 +531,7 @@
             resultMessage.textContent = '정답입니다!';
             resultMessage.classList.add('correct-bg');
         } else {
-            resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'} (Space)`;
+            resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
             resultMessage.classList.add('wrong-bg');
             state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
             saveWrongCounts();
@@ -565,6 +575,13 @@
         if (event.key === 'Enter') {
             event.preventDefault(); 
             checkAnswer();
+        }
+    }
+
+    function handleYearEnterToMonth(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            monthInput.focus();
         }
     }
 
