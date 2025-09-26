@@ -323,20 +323,23 @@
         const timelineList = document.getElementById('timeline-list');
         const normalizedSearchTerm = searchTerm.toLowerCase().trim();
         
-        // 이스터에그 기능
+        // 이스터에그 기능 수정: '박찬일' 입력 시 '미소'가 들어간 사건 검색
+        let eventsToRender;
         if (normalizedSearchTerm === '박찬일') {
-            timelineList.innerHTML = `<div class="p-4 bg-yellow-600 rounded-lg text-center font-bold text-xl">
-                박찬일 님의 미소는 1946년에 시작되었습니다.
-            </div>`;
-            return;
+            eventsToRender = events.filter(event => event.name.includes('미소'));
+        } else {
+            eventsToRender = normalizedSearchTerm ? events.filter(event => 
+                event.name.toLowerCase().includes(normalizedSearchTerm) || 
+                String(event.year).includes(normalizedSearchTerm)
+            ) : events;
         }
 
-        const filteredEvents = normalizedSearchTerm ? events.filter(event => 
-            event.name.toLowerCase().includes(normalizedSearchTerm) || 
-            String(event.year).includes(normalizedSearchTerm)
-        ) : events;
+        if (eventsToRender.length === 0) {
+            timelineList.innerHTML = `<p class="text-center text-gray-400">검색 결과가 없습니다.</p>`;
+            return;
+        }
         
-        timelineList.innerHTML = filteredEvents.map((event, index) => {
+        timelineList.innerHTML = eventsToRender.map((event, index) => {
             const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
             return `<div class="p-2 bg-gray-700 rounded-lg">
                         <p class="font-bold">${event.name}</p>
