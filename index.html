@@ -348,18 +348,7 @@
         const normalizedSearchTerm = searchTerm.toLowerCase().trim();
         
         let eventsToRender;
-        if (normalizedSearchTerm === '박찬일') {
-            eventsToRender = events.filter(event => event.name.includes('미소'));
-        } else if (normalizedSearchTerm === '곽승헌') {
-            eventsToRender = events.filter(event => event.name.includes('태형'));
-        } else if (normalizedSearchTerm === '노무현') {
-            eventsToRender = events.filter(event => event.year === 1946);
-        } else {
-            eventsToRender = normalizedSearchTerm ? events.filter(event => 
-                event.name.toLowerCase().includes(normalizedSearchTerm) || 
-                String(event.year).includes(normalizedSearchTerm)
-            ) : events;
-        }
+       
 
         if (eventsToRender.length === 0) {
             timelineList.innerHTML = `<p class="text-center text-gray-400">검색 결과가 없습니다.</p>`;
