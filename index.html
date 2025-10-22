@@ -347,22 +347,26 @@
         const timelineList = document.getElementById('timeline-list');
         const normalizedSearchTerm = searchTerm.toLowerCase().trim();
         
-        let eventsToRender;
-       
+        // 검색어에 따라 이벤트 필터링
+        let eventsToRender = events;
 
+        if (normalizedSearchTerm) {
+            eventsToRender = events.filter(event => {
+                const eventName = event.name.toLowerCase();
+                const eventYear = String(event.year);
+                const eventDate = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+                
+                // 이벤트 이름, 연도, 날짜(연도.월) 모두 검색
+                return eventName.includes(normalizedSearchTerm) || 
+                       eventYear.includes(normalizedSearchTerm) ||
+                       eventDate.includes(normalizedSearchTerm);
+            });
+        }
+        
         if (eventsToRender.length === 0) {
             timelineList.innerHTML = `<p class="text-center text-gray-400">검색 결과가 없습니다.</p>`;
             return;
         }
-        
-        timelineList.innerHTML = eventsToRender.map((event, index) => {
-            const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
-            return `<div class="p-2 bg-gray-700 rounded-lg">
-                        <p class="font-bold">${event.name}</p>
-                        <p class="text-sm text-gray-400">${date}</p>
-                    </div>`;
-        }).join('');
-    }
 
     function renderWrongAnswers() {
         loadWrongCounts();
