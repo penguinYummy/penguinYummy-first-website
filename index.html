@@ -109,21 +109,23 @@
             <div class="text-center">
                 <label for="startYear" class="block mb-2 text-lg">시작 연도</label>
                 <select id="startYear" class="input-box bg-gray-600 rounded-md">
-                    <option value="1900">1900년대</option>
-                    <option value="1910">1910년대</option>
-                    <option value="1920">1920년대</option>
-                    <option value="1930">1930년대</option>
-                    <option value="1940">1940년대</option>
+                    <option value="1940" selected>1940년대</option>
+                    <option value="1950">1950년대</option>
+                    <option value="1960">1960년대</option>
+                    <option value="1970">1970년대</option>
+                    <option value="1980">1980년대</option>
+                    <option value="1990">1990년대</option>
                 </select>
             </div>
             <div class="text-center">
                 <label for="endYear" class="block mb-2 text-lg">끝 연도</label>
                 <select id="endYear" class="input-box bg-gray-600 rounded-md">
-                    <option value="1910">1910년대</option>
-                    <option value="1920">1920년대</option>
-                    <option value="1930">1930년대</option>
-                    <option value="1940">1940년대</option>
                     <option value="1950">1950년대</option>
+                    <option value="1960">1960년대</option>
+                    <option value="1970">1970년대</option>
+                    <option value="1980">1980년대</option>
+                    <option value="1990" selected>1990년대</option>
+                    <option value="2000">2000년대</option>
                 </select>
             </div>
         </div>
@@ -144,7 +146,8 @@
             <input type="number" id="month-input" placeholder="월을 입력하세요 (선택 사항)" class="input-box text-center">
         </div>
         <div id="quiz-actions" class="flex justify-center space-x-4">
-            </div>
+            <button class="btn btn-primary text-lg" onclick="checkAnswer()">답안 확인 (Enter)</button>
+        </div>
         <div id="result-message" class="hidden"></div>
     </div>
 
@@ -176,118 +179,58 @@
 <script>
     // 전역 변수 및 상태
     const events = [
-        { name: "회사령", year: 1910, month: 0 },
-        { name: "범죄 즉결레", year: 1910, month: 0 },
-        { name: "토지 조사 사업", year: 1910, month: 0 },
-        { name: "제1차 조선교육령", year: 1911, month: 0 },
-        { name: "삼림령", year: 1911, month: 0 },
-        { name: "조선 태형령", year: 1912, month: 0 },
-        { name: "토지 조사령", year: 1912, month: 0 },
-        { name: "제1차 세계대전", year: 1914, month: 0 },
-        { name: "경원선, 호남선 완공", year: 1914, month: 0 },
-        { name: "임야 조사 사업", year: 1917, month: 0 },
-        { name: "고종 사망", year: 1919, month: 1 },
-        { name: "2·8 독립 선언", year: 1919, month: 2 },
-        { name: "3·1 운동", year: 1919, month: 3 },
-        { name: "대한 국민 의회", year: 1919, month: 3 },
-        { name: "대한민국 임시 헌장", year: 1919, month: 4 },
-        { name: "한성 정부 선포", year: 1919, month: 4 },
-        { name: "대한민국 임시 정부(통합 전)", year: 1919, month: 4 },
-        { name: "대한민국 임시 정부(통합 후)", year: 1919, month: 9 },
-        { name: "대한민국 임시 헌법", year: 1919, month: 9 },
-        { name: "의열단 조직", year: 1919, month: 0 },
-        { name: "봉오동 전투", year: 1920, month: 6 },
-        { name: "청산리 대첩", year: 1920, month: 10 },
-        { name: "간도 참변", year: 1920, month: 10 },
-        { name: "회사령 페지", year: 1920, month: 0 },
-        { name: "산미 증식 계획", year: 1920, month: 0 },
-        { name: "물산 장려 운동", year: 1920, month: 0 },
-        { name: "대한민국 임시 정부 침체", year: 1921, month: 0 },
-        { name: "자유시 참변", year: 1921, month: 0 },
-        { name: "조선어 연구회", year: 1921, month: 0 },
-        { name: "국민 대표 회의", year: 1923, month: 0 },
-        { name: "조선 혁명 선언", year: 1923, month: 0 },
-        { name: "조선 민립 대학 기성회", year: 1923, month: 0 },
-        { name: "암태도 소작쟁의", year: 1923, month: 0 },
-        { name: "관세 폐지", year: 1923, month: 0 },
-        { name: "형평 운동", year: 1923, month: 0 },
-        { name: "경성 제국 대학", year: 1924, month: 0 },
-        { name: "조선 노농 총동맹", year: 1924, month: 0 },
-        { name: "조선 청년 총동맹", year: 1924, month: 0 },
-        { name: "제1차 국공합작", year: 1924, month: 0 },
-        { name: "조선 공산당 조직", year: 1925, month: 0 },
-        { name: "치안유지법(개정 전)", year: 1925, month: 0 },
-        { name: "박은식을 임시 대통령으로 추대", year: 1925, month: 0 },
-        { name: "조선 학생 과학 연구회 설립", year: 1925, month: 0 },
-        { name: "미쓰야 협정", year: 1925, month: 0 },
-        { name: "6·10 만세 운동", year: 1926, month: 6 },
-        { name: "순종 서거", year: 1926, month: 0 },
-        { name: "정우회 선언", year: 1926, month: 0 },
-        { name: "신간회 창립", year: 1927, month: 0 },
-        { name: "조선 농민 총동맹, 조선 노동 총동맹", year: 1927, month: 0 },
-        { name: "조선 공산당 해체", year: 1928, month: 0 },
-        { name: "치안 유지법(개정 후)", year: 1928, month: 0 },
-        { name: "함경선", year: 1928, month: 0 },
-        { name: "원산 총파업", year: 1929, month: 0 },
-        { name: "대공황", year: 1929, month: 0 },
-        { name: "3부 통합", year: 1929, month: 0 },
-        { name: "광주 학생 항일 운동", year: 1929, month: 0 },
-        { name: "문자 보급 운동", year: 1929, month: 0 },
-        { name: "만주 사변", year: 1931, month: 0 },
-        { name: "한인 애국단", year: 1931, month: 0 },
-        { name: "신간회 해소", year: 1931, month: 0 },
-        { name: "조선어 학회", year: 1931, month: 0 },
-        { name: "브나로드 운동", year: 1931, month: 0 },
-        { name: "이봉창, 윤봉길 폭탄 투하", year: 1932, month: 0 },
-        { name: "농촌 진흥 운동", year: 1932, month: 0 },
-        { name: "조선 농지령", year: 1934, month: 0 },
-        { name: "조선 민족 혁명당", year: 1935, month: 0 },
-        { name: "한국 국민당", year: 1935, month: 0 },
-        { name: "조선 사상범 보호 관찰령", year: 1936, month: 0 },
-        { name: "중일전쟁", year: 1937, month: 0 },
-        { name: "보천보 전투", year: 1937, month: 0 },
-        { name: "한국 광복 운동 단체 연합회", year: 1937, month: 0 },
-        { name: "조선 교육령 개정", year: 1938, month: 0 },
-        { name: "국민 총동원 조선 연맹(애국반)", year: 1938, month: 0 },
-        { name: "국가 총동원법", year: 1938, month: 0 },
-        { name: "육군 특별 지원병제", year: 1938, month: 0 },
-        { name: "국민 징용령", year: 1939, month: 0 },
-        { name: "제2차 세계 대전", year: 1939, month: 0 },
-        { name: "조선일보, 동아일보 폐간", year: 1940, month: 0 },
-        { name: "한국 독립당 (충칭)", year: 1940, month: 0 },
-        { name: "한국 광복군 창설", year: 1940, month: 0 },
-        { name: "태평양 전쟁", year: 1941, month: 0 },
-        { name: "초등학교 -> 국민학교", year: 1941, month: 0 },
-        { name: "조선 사상범 예방 구금령", year: 1941, month: 0 },
-        { name: "조선 의용대 화북지대", year: 1941, month: 0 },
-        { name: "대한민국 임시 정부(충칭)의 건국 강령", year: 1941, month: 0 },
-        { name: "조선어 학회 사건", year: 1942, month: 0 },
-        { name: "조선 독립 동맹", year: 1942, month: 0 },
-        { name: "조선 독립 동맹의 건국 강령", year: 1942, month: 0 },
-        { name: "학도 지원병제", year: 1943, month: 0 },
-        { name: "카이로 회담", year: 1943, month: 0 },
-        { name: "징병제", year: 1944, month: 0 },
-        { name: "조선 건국 동맹", year: 1944, month: 0 },
-        { name: "조선 건국 동맹의 건국 강령", year: 1944, month: 0 },
-        { name: "얄타 회담", year: 1945, month: 2 },
-        { name: "포츠담 회담", year: 1945, month: 7 },
-        { name: "소련의 대일전 참전", year: 1945, month: 8 },
-        { name: "모스크바 3국 외상 회의", year: 1945, month: 12 },
-        { name: "광복", year: 1945, month: 0 },
-        { name: "유엔 설립", year: 1945, month: 0 },
-        { name: "제 1차 미소 공동 위원회 개최", year: 1946, month: 3 },
-        { name: "제 1차 미소 공동 위원회 결렬", year: 1946, month: 5 },
-        { name: "이승만의 정읍 발언", year: 1946, month: 6 },
-        { name: "좌우 합작 운동", year: 1946, month: 7 },
-        { name: "좌우 합작 위원회 결성", year: 1946, month: 7 },
-        { name: "트루먼 독트린 발표", year: 1947, month: 3 },
-        { name: "제 2차 미소 공동 위원회 개최", year: 1947, month: 5 },
-        { name: "한반도 문제가 유엔으로 이관", year: 1947, month: 9 },
-        { name: "제 2차 미소 공동 위원회 결렬", year: 1947, month: 10 },
-        { name: "한반도 총선거 실시 결정", year: 1947, month: 11 },
-        { name: "남한만의 단독 선거 실시 결정", year: 1948, month: 2 },
-        { name: "김구의 남북 협상", year: 1948, month: 4 },
-        { name: "선거를 통한 통일 정부 수립을 담은 공동 성명서", year: 1948, month: 4 }
+        { name: "5.10 총선거", year: 1948, month: 4 },
+    { name: "제헌 헌법 공포", year: 1948, month: 6 },
+    { name: "대한민국 정부 수립 선포", year: 1948, month: 7 },
+    { name: "농지 개혁법 제정", year: 1949, month: 5 },
+    { name: "귀속 재산 처리법", year: 1949, month: 11 },
+    { name: "반민특위 피습 사건", year: 1949, month: 4 },
+    { name: "6.25 전쟁 시작", year: 1950, month: 5 },
+    { name: "인천 상륙 작전", year: 1950, month: 8 },
+    { name: "1.4 후퇴", year: 1951, month: 0 },
+    { name: "정전 협정 체결", year: 1953, month: 6 },
+    { name: "발췌 개헌", year: 1952, month: 6 },
+    { name: "부산 정치 파동", year: 1952, month: 4 },
+    { name: "사사오입 개헌", year: 1954, month: 10 },
+    { name: "북한의 제 1차 5개년 계획", year: 1957, month: 0 },
+    { name: "3.15 부정선거", year: 1960, month: 2 },
+    { name: "4.19 혁명", year: 1960, month: 3 },
+    { name: "대학교수단의 시국 선언", year: 1960, month: 3 },
+    { name: "5.16 군사정변", year: 1961, month: 4 },
+    { name: "6.3 시위", year: 1964, month: 5 },
+    { name: "베트남 파병", year: 1964, month: 8 },
+    { name: "브라운 각서", year: 1966, month: 11 },
+    { name: "3선 개헌", year: 1969, month: 8 },
+    { name: "남북 공동 성명", year: 1972, month: 6 },
+    { name: "김급 조치 1호", year: 1974, month: 0 },
+    { name: "민청학련", year: 1974, month: 3 },
+    { name: "인민 혁명단 재건 위원회 조작 사건", year: 1975, month: 3 },
+    { name: "3.1 민주구국 선언", year: 1976, month: 2 },
+    { name: "부마 민주 항쟁", year: 1979, month: 9 },
+    { name: "10.26 사태", year: 1979, month: 9 },
+    { name: "12.12 군사 반란", year: 1979, month: 11 },
+    { name: "서울의 봄", year: 1980, month: 2 },
+    { name: "5.18 민주화 운동", year: 1980, month: 4 },
+    { name: "4.13 호헌 조치", year: 1987, month: 3 },
+    { name: "이한열 최루탄 피격", year: 1987, month: 5 },
+    { name: "국민 대회", year: 1987, month: 5 },
+    { name: "면동 성당 농성", year: 1987, month: 5 },
+    { name: "국민 평화 대행진", year: 1987, month: 5 },
+    { name: "6.29 민주화 선언 발표", year: 1987, month: 5 },
+    { name: "제1차 경제 개발 5개년 계획", year: 1962, month: 0 },
+    { name: "제2차 경제 개발 5개년 계획", year: 1967, month: 0 },
+    { name: "제 3 4차 경제 개발 5개년 계획", year: 1972, month: 0 },
+    { name: "제 1차 석유 파동", year: 1973, month: 9 },
+    { name: "수출 100억 달러 달성", year: 1977, month: 11 },
+    { name: "제 2차 석유 파동", year: 1978, month: 11 },
+    { name: "광주 대단지 사건", year: 1971, month: 7 },
+    { name: "새마을 운동", year: 1970, month: 3 },
+    { name: "함평 고구마 사건", year: 1976, month: 8 },
+    { name: "전태일 분신", year: 1970, month: 10 },
+    { name: "낙동강 페놀 오염 사건", year: 1991, month: 2 },
+    { name: "환경청 설치", year: 1980, month: 0 },
+    { name: "국가 환경 선언문", year: 1992, month: 5 },
+    { name: "미니스커트와 장발 단속", year: 1973, month: 2 }
     ];
 
     let state = {
@@ -442,20 +385,27 @@
 
     function startQuizFromSelection() {
         const startYear = parseInt(document.getElementById('startYear').value);
-        const endYear = parseInt(document.getElementById('endYear').value);
+        // 드롭다운의 값은 '1940'처럼 시작 연도를 나타내므로, 
+        // 해당 10년대를 모두 포함하려면 '1949'처럼 9를 더한 연도까지 포함하는 것이 일반적입니다.
+        // 하지만 사용자 경험을 위해 선택된 '끝 연도'의 10년 단위까지 포함되도록
+        // (예: 끝 연도 1950년대 선택 시 1959년까지 포함) 조건을 수정합니다.
+        const endYearDecadeStart = parseInt(document.getElementById('endYear').value);
+        const endYearInclusive = endYearDecadeStart + 9; // 해당 10년의 마지막 해
 
-        if (endYear < startYear) {
-            showMessage('끝 연도는 시작 연도보다 커야 합니다.');
+        if (endYearDecadeStart < startYear) {
+            showMessage('끝 연도 선택은 시작 연도보다 이후여야 합니다.');
             return;
         }
         
-        let filteredEvents = events.filter(event => event.year >= startYear && event.year < endYear);
+        // 수정: event.year가 선택된 시작 연도(10년 단위) 이상 AND 끝 연도(10년 단위 + 9) 이하인 경우 포함
+        let filteredEvents = events.filter(event => event.year >= startYear && event.year <= endYearInclusive);
+        
         if (state.wrongOnly) {
              filteredEvents = filteredEvents.filter(event => state.wrongCounts[event.name] > 0);
         }
         
         if (filteredEvents.length === 0) {
-            showMessage('해당 연도에 맞는 문제가 없습니다.');
+            showMessage(`선택된 연도(${startYear} ~ ${endYearInclusive}년)에 맞는 문제가 없습니다.`);
             return;
         }
         
@@ -499,9 +449,9 @@
         resultMessage.classList.add('hidden');
         resultMessage.classList.remove('correct-bg', 'wrong-bg');
 
-        // 기존의 '다음 문제' 버튼이 있다면 제거
+        // 기존의 '다음 문제' 버튼이 있다면 제거하고 '답안 확인' 버튼만 유지
         const quizActions = document.getElementById('quiz-actions');
-        quizActions.innerHTML = ''; 
+        quizActions.innerHTML = '<button class="btn btn-primary text-lg" onclick="checkAnswer()">답안 확인 (Enter)</button>';
         
         // 다음 문제로 넘어갈 때 무조건 년도 입력 필드에 포커스를 맞춥니다.
         document.getElementById('year-input').focus();
@@ -512,9 +462,15 @@
         const yearInput = parseInt(document.getElementById('year-input').value);
         const monthInput = parseInt(document.getElementById('month-input').value) || 0;
         const resultMessage = document.getElementById('result-message');
-        const isAnswered = document.getElementById('next-question-btn');
+        
+        // 이미 답변이 처리되었는지 확인
+        if (document.getElementById('next-question-btn')) return;
 
-        if (isAnswered) return;
+        // 숫자가 입력되지 않은 경우 처리
+        if (isNaN(yearInput)) {
+            showMessage("연도를 숫자로 입력해주세요.");
+            return;
+        }
 
         const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
 
@@ -534,6 +490,7 @@
 
         // '다음 문제' 버튼 생성
         const quizActions = document.getElementById('quiz-actions');
+        quizActions.innerHTML = ''; // 기존 '답안 확인' 버튼 제거
         const nextBtn = document.createElement('button');
         nextBtn.id = 'next-question-btn';
         nextBtn.className = 'btn btn-primary text-lg';
@@ -565,14 +522,22 @@
         }
     }
 
-    // 연도 입력 필드에 키보드 이벤트 리스너 추가 (엔터 키 누르면 월 입력란으로 이동)
+    // 연도 입력 필드에 키보드 이벤트 리스너 추가 (엔터 키 누르면 월 입력란으로 이동 또는 답안 확인)
     document.getElementById('year-input').addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
+            event.preventDefault(); // 기본 폼 제출 방지
+
             const currentEvent = state.questions[state.currentQuestionIndex];
-            if (currentEvent.month !== 0) {
-                event.preventDefault();
+            const isAnswered = document.getElementById('next-question-btn');
+            
+            if(isAnswered) {
+                // 이미 답을 맞췄으면 다음 문제로
+                isAnswered.click();
+            } else if (currentEvent.month !== 0) {
+                // 월 입력이 필요하면 월 입력란으로 포커스 이동
                 document.getElementById('month-input').focus();
             } else {
+                // 월 입력이 필요 없으면 답안 확인
                 checkAnswer();
             }
         }
@@ -581,7 +546,14 @@
     // 월 입력 필드에 키보드 이벤트 리스너 추가 (엔터 키 누르면 답안 확인)
     document.getElementById('month-input').addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            checkAnswer();
+            event.preventDefault(); // 기본 폼 제출 방지
+            const isAnswered = document.getElementById('next-question-btn');
+            if(isAnswered) {
+                // 이미 답을 맞췄으면 다음 문제로
+                isAnswered.click();
+            } else {
+                checkAnswer();
+            }
         }
     });
     
