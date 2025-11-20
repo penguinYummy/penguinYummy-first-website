@@ -78,6 +78,30 @@
         .wrong-item-bg {
             background-color: #7f1d1d; /* red-700 (softer) */
         }
+        
+        /* 새로운 날짜 입력 레이아웃 스타일 */
+        #date-input-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem; /* 전체 요소 사이 간격 */
+            margin-bottom: 2rem;
+            flex-wrap: wrap; /* 작은 화면에서 줄바꿈 */
+        }
+        .date-part {
+            display: flex;
+            gap: 0.25rem; /* 년.월.일 사이 간격 */
+            align-items: center;
+        }
+        .separator {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+        .input-mini {
+            width: 200px; /* 입력 박스 크기 조정 */
+            padding: 0.5rem;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -120,6 +144,10 @@
             <div class="text-center">
                 <label for="endYear" class="block mb-2 text-lg">끝 연도</label>
                 <select id="endYear" class="input-box bg-gray-600 rounded-md">
+                    <option value="1910">1910년대</option>
+                    <option value="1920">1920년대</option>
+                    <option value="1930">1930년대</option>
+                    <option value="1940">1940년대</option>
                     <option value="1950">1950년대</option>
                     <option value="1960">1960년대</option>
                     <option value="1970">1970년대</option>
@@ -141,10 +169,27 @@
             <button class="btn text-sm px-4 py-2" onclick="showScreen('menu')">메인 메뉴로 돌아가기</button>
         </div>
         <h3 id="event-name" class="text-3xl font-bold mb-8"></h3>
-        <div class="input-group mb-8 w-full max-w-sm mx-auto">
-            <input type="number" id="year-input" placeholder="연도를 입력하세요 (예: 1919)" class="input-box text-center">
-            <input type="number" id="month-input" placeholder="월을 입력하세요 (선택 사항)" class="input-box text-center">
+        
+        <div id="date-input-display">
+            <div id="start-date-part" class="date-part">
+                <input type="number" id="start-year-input" placeholder="연도" class="input-box input-mini">
+                <span id="start-year-dot" class="text-xl hidden">.</span>
+                <input type="number" id="start-month-input" placeholder="월" class="input-box input-mini hidden">
+                <span id="start-month-dot" class="text-xl hidden">.</span>
+                <input type="number" id="start-day-input" placeholder="일" class="input-box input-mini hidden">
+            </div>
+            
+            <span id="duration-separator" class="separator hidden">~</span>
+            
+            <div id="end-date-part" class="date-part hidden">
+                <input type="number" id="end-year-input" placeholder="연도" class="input-box input-mini">
+                <span id="end-year-dot" class="text-xl hidden">.</span>
+                <input type="number" id="end-month-input" placeholder="월" class="input-box input-mini hidden">
+                <span id="end-month-dot" class="text-xl hidden">.</span>
+                <input type="number" id="end-day-input" placeholder="일" class="input-box input-mini hidden">
+            </div>
         </div>
+        
         <div id="quiz-actions" class="flex justify-center space-x-4">
             <button class="btn btn-primary text-lg" onclick="checkAnswer()">답안 확인 (Enter)</button>
         </div>
@@ -179,58 +224,64 @@
 <script>
     // 전역 변수 및 상태
     const events = [
-        { name: "5.10 총선거", year: 1948, month: 4 },
-    { name: "제헌 헌법 공포", year: 1948, month: 6 },
-    { name: "대한민국 정부 수립 선포", year: 1948, month: 7 },
-    { name: "농지 개혁법 제정", year: 1949, month: 5 },
-    { name: "귀속 재산 처리법", year: 1949, month: 11 },
-    { name: "반민특위 피습 사건", year: 1949, month: 4 },
-    { name: "6.25 전쟁 시작", year: 1950, month: 5 },
-    { name: "인천 상륙 작전", year: 1950, month: 8 },
-    { name: "1.4 후퇴", year: 1951, month: 0 },
-    { name: "정전 협정 체결", year: 1953, month: 6 },
-    { name: "발췌 개헌", year: 1952, month: 6 },
-    { name: "부산 정치 파동", year: 1952, month: 4 },
-    { name: "사사오입 개헌", year: 1954, month: 10 },
-    { name: "북한의 제 1차 5개년 계획", year: 1957, month: 0 },
-    { name: "3.15 부정선거", year: 1960, month: 2 },
-    { name: "4.19 혁명", year: 1960, month: 3 },
-    { name: "대학교수단의 시국 선언", year: 1960, month: 3 },
-    { name: "5.16 군사정변", year: 1961, month: 4 },
-    { name: "6.3 시위", year: 1964, month: 5 },
-    { name: "베트남 파병", year: 1964, month: 8 },
-    { name: "브라운 각서", year: 1966, month: 11 },
-    { name: "3선 개헌", year: 1969, month: 8 },
-    { name: "남북 공동 성명", year: 1972, month: 6 },
-    { name: "김급 조치 1호", year: 1974, month: 0 },
-    { name: "민청학련", year: 1974, month: 3 },
-    { name: "인민 혁명단 재건 위원회 조작 사건", year: 1975, month: 3 },
-    { name: "3.1 민주구국 선언", year: 1976, month: 2 },
-    { name: "부마 민주 항쟁", year: 1979, month: 9 },
-    { name: "10.26 사태", year: 1979, month: 9 },
-    { name: "12.12 군사 반란", year: 1979, month: 11 },
-    { name: "서울의 봄", year: 1980, month: 2 },
-    { name: "5.18 민주화 운동", year: 1980, month: 4 },
-    { name: "4.13 호헌 조치", year: 1987, month: 3 },
-    { name: "이한열 최루탄 피격", year: 1987, month: 5 },
-    { name: "국민 대회", year: 1987, month: 5 },
-    { name: "면동 성당 농성", year: 1987, month: 5 },
-    { name: "국민 평화 대행진", year: 1987, month: 5 },
-    { name: "6.29 민주화 선언 발표", year: 1987, month: 5 },
-    { name: "제1차 경제 개발 5개년 계획", year: 1962, month: 0 },
-    { name: "제2차 경제 개발 5개년 계획", year: 1967, month: 0 },
-    { name: "제 3 4차 경제 개발 5개년 계획", year: 1972, month: 0 },
-    { name: "제 1차 석유 파동", year: 1973, month: 9 },
-    { name: "수출 100억 달러 달성", year: 1977, month: 11 },
-    { name: "제 2차 석유 파동", year: 1978, month: 11 },
-    { name: "광주 대단지 사건", year: 1971, month: 7 },
-    { name: "새마을 운동", year: 1970, month: 3 },
-    { name: "함평 고구마 사건", year: 1976, month: 8 },
-    { name: "전태일 분신", year: 1970, month: 10 },
-    { name: "낙동강 페놀 오염 사건", year: 1991, month: 2 },
-    { name: "환경청 설치", year: 1980, month: 0 },
-    { name: "국가 환경 선언문", year: 1992, month: 5 },
-    { name: "미니스커트와 장발 단속", year: 1973, month: 2 }
+        { name: "5.10 총선거", year: 1948, month: 4, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "제헌 헌법 공포", year: 1948, month: 6, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "대한민국 정부 수립 선포", year: 1948, month: 7, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "농지 개혁법 제정", year: 1949, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "귀속 재산 처리법", year: 1949, month: 11, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "반민특위 피습 사건", year: 1949, month: 4, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "6.25 전쟁 시작", year: 1950, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "인천 상륙 작전", year: 1950, month: 8, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "1.4 후퇴", year: 1951, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "정전 협정 체결", year: 1953, month: 6, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "발췌 개헌", year: 1952, month: 6, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "부산 정치 파동", year: 1952, month: 4, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "사사오입 개헌", year: 1954, month: 10, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "3.15 부정선거", year: 1960, month: 2, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "4.19 혁명", year: 1960, month: 3, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "대학교수단의 시국 선언", year: 1960, month: 3, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "5.16 군사정변", year: 1961, month: 4, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "6.3 시위", year: 1964, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "브라운 각서", year: 1966, month: 11, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "3선 개헌", year: 1969, month: 8, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "남북 공동 성명", year: 1972, month: 6, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "김급 조치 1호", year: 1974, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "민청학련", year: 1974, month: 3, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "인민 혁명단 재건 위원회 조작 사건", year: 1975, month: 3, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "3.1 민주구국 선언", year: 1976, month: 2, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "부마 민주 항쟁", year: 1979, month: 9, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "10.26 사태", year: 1979, month: 9, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "12.12 군사 반란", year: 1979, month: 11, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "서울의 봄", year: 1980, month: 2, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "5.18 민주화 운동", year: 1980, month: 4, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "4.13 호헌 조치", year: 1987, month: 3, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "이한열 최루탄 피격", year: 1987, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "국민 대회", year: 1987, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "국민 평화 대행진", year: 1987, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "6.29 민주화 선언 발표", year: 1987, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "제1차 경제 개발 5개년 계획", year: 1962, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "제2차 경제 개발 5개년 계획", year: 1967, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "제 3 4차 경제 개발 5개년 계획", year: 1972, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "제 1차 석유 파동", year: 1973, month: 9, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "수출 100억 달러 달성", year: 1977, month: 11, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "제 2차 석유 파동", year: 1978, month: 11, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "광주 대단지 사건", year: 1971, month: 7, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "새마을 운동", year: 1970, month: 3, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "함평 고구마 사건", year: 1976, month: 8, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "전태일 분신", year: 1970, month: 10, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "낙동강 페놀 오염 사건", year: 1991, month: 2, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "환경청 설치", year: 1980, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        { name: "국가 환경 선언문", year: 1992, month: 5, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+        
+        // 기간이 있는 사건 (시작 및 끝 연월일)
+        // 면동 성당 농성 1987.6.10 ~ 1987.6.15
+        { name: "면동 성당 농성", year: 1987, month: 6, day: 10, endYear: 1987, endMonth: 6, endDay: 15 },
+        // 북한의 제 1차 5개년 계획 1957 ~ 1961
+        { name: "북한의 제 1차 5개년 계획", year: 1957, month: 0, day: 0, endYear: 1961, endMonth: 0, endDay: 0 },
+        // 베트남 파병 1964 ~ 1973
+        { name: "베트남 파병", year: 1964, month: 0, day: 0, endYear: 1973, endMonth: 0, endDay: 0 },
+        // 미니스커트와 장발 단속 1973 ~ 1980
+        { name: "미니스커트와 장발 단속", year: 1973, month: 0, day: 0, endYear: 1980, endMonth: 0, endDay: 0 },
     ];
 
     let state = {
@@ -251,6 +302,23 @@
         finalScore: document.getElementById('final-score-view'),
         wrongAnswers: document.getElementById('wrong-answers-view')
     };
+    
+    // 날짜 입력 필드 캐싱 (새로운 레이아웃에 맞춰 수정)
+    const startYearInput = document.getElementById('start-year-input');
+    const startMonthInput = document.getElementById('start-month-input');
+    const startDayInput = document.getElementById('start-day-input');
+    const endYearInput = document.getElementById('end-year-input');
+    const endMonthInput = document.getElementById('end-month-input');
+    const endDayInput = document.getElementById('end-day-input');
+    
+    // 구분자 및 컨테이너 캐싱
+    const durationSeparator = document.getElementById('duration-separator');
+    const endDatePart = document.getElementById('end-date-part');
+    const startYearDot = document.getElementById('start-year-dot');
+    const startMonthDot = document.getElementById('start-month-dot');
+    const endYearDot = document.getElementById('end-year-dot');
+    const endMonthDot = document.getElementById('end-month-dot');
+
 
     function showScreen(screenName) {
         for (const screen in screens) {
@@ -264,46 +332,50 @@
         } else if (screenName === 'wrongAnswers') {
             renderWrongAnswers();
         } else if (screenName === 'quiz') {
-            // 초기 퀴즈 화면 진입 시에도 포커스 설정
-            // 다음 문제로 넘어가는 것은 renderQuestion에서 처리됩니다.
-            document.getElementById('year-input').focus();
+            startYearInput.focus();
         }
     }
 
-    // 틀린 연도 목록을 보여주는 기능 추가
     function showWrongAnswers() {
         showScreen('wrongAnswers');
     }
 
-    // 메시지 창을 보여주는 함수
     function showMessage(message) {
         document.getElementById('message-text').textContent = message;
         document.getElementById('message-box').classList.remove('hidden');
     }
 
-    // 메시지 창을 숨기는 함수
     function hideMessage() {
         document.getElementById('message-box').classList.add('hidden');
     }
+    
+    function formatEventDate(event) {
+        // 기간이 있는 경우: endYear > 0
+        if (event.endYear > 0) {
+            const start = `${event.year}` + (event.month > 0 ? `.${event.month}` : '') + (event.day > 0 ? `.${event.day}` : '');
+            const end = `${event.endYear}` + (event.endMonth > 0 ? `.${event.endMonth}` : '') + (event.endDay > 0 ? `.${event.endDay}` : '');
+            return `${start} ~ ${end}`;
+        }
+        // 단일 사건인 경우
+        let date = `${event.year}`;
+        if (event.month > 0) date += `.${event.month}`;
+        if (event.day > 0) date += `.${event.day}`;
+        return date;
+    }
 
-    // 검색 기능 로직이 추가되고, 초기화 오류가 수정된 renderTimeline 함수
+
     function renderTimeline(searchTerm = '') {
         const timelineList = document.getElementById('timeline-list');
         const normalizedSearchTerm = searchTerm.toLowerCase().trim();
         
-        // 검색어에 따라 이벤트 필터링
-        let eventsToRender = events; // <<-- 이벤트 목록 초기화 수정 완료
+        let eventsToRender = events;
 
         if (normalizedSearchTerm) {
             eventsToRender = events.filter(event => {
                 const eventName = event.name.toLowerCase();
-                const eventYear = String(event.year);
-                // 연도와 월을 조합한 날짜 형식도 검색 가능하도록 처리
-                const eventDate = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+                const eventDate = formatEventDate(event);
                 
-                // 이벤트 이름, 연도, 날짜(연도.월) 모두 검색
                 return eventName.includes(normalizedSearchTerm) || 
-                       eventYear.includes(normalizedSearchTerm) ||
                        eventDate.includes(normalizedSearchTerm);
             });
         }
@@ -314,7 +386,7 @@
         }
         
         timelineList.innerHTML = eventsToRender.map((event, index) => {
-            const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+            const date = formatEventDate(event);
             return `<div class="p-2 bg-gray-700 rounded-lg">
                         <p class="font-bold">${event.name}</p>
                         <p class="text-sm text-gray-400">${date}</p>
@@ -333,18 +405,15 @@
             return;
         }
 
-        // Add wrongCount to each event object for sorting and display
         wrongEvents = wrongEvents.map(event => ({
             ...event,
             wrongCount: state.wrongCounts[event.name]
         }));
         
-        // Now sort correctly based on the new wrongCount property
         wrongEvents.sort((a, b) => b.wrongCount - a.wrongCount); 
 
-        // 틀린 문제 목록에 `wrong-item-bg` 클래스 적용
         wrongList.innerHTML = wrongEvents.map(event => {
-            const date = event.month !== 0 ? `${event.year}.${event.month}` : `${event.year}`;
+            const date = formatEventDate(event);
             return `<div class="p-2 wrong-item-bg rounded-lg">
                         <p class="font-bold">${event.name}</p>
                         <p class="text-sm text-gray-300">정답: ${date} - 틀린 횟수: ${event.wrongCount}</p>
@@ -352,7 +421,6 @@
         }).join('');
     }
 
-    // 틀린 횟수를 초기화하는 함수 추가
     function resetWrongCounts() {
         state.wrongCounts = {};
         saveWrongCounts();
@@ -385,19 +453,14 @@
 
     function startQuizFromSelection() {
         const startYear = parseInt(document.getElementById('startYear').value);
-        // 드롭다운의 값은 '1940'처럼 시작 연도를 나타내므로, 
-        // 해당 10년대를 모두 포함하려면 '1949'처럼 9를 더한 연도까지 포함하는 것이 일반적입니다.
-        // 하지만 사용자 경험을 위해 선택된 '끝 연도'의 10년 단위까지 포함되도록
-        // (예: 끝 연도 1950년대 선택 시 1959년까지 포함) 조건을 수정합니다.
         const endYearDecadeStart = parseInt(document.getElementById('endYear').value);
-        const endYearInclusive = endYearDecadeStart + 9; // 해당 10년의 마지막 해
+        const endYearInclusive = endYearDecadeStart + 9;
 
         if (endYearDecadeStart < startYear) {
             showMessage('끝 연도 선택은 시작 연도보다 이후여야 합니다.');
             return;
         }
         
-        // 수정: event.year가 선택된 시작 연도(10년 단위) 이상 AND 끝 연도(10년 단위 + 9) 이하인 경우 포함
         let filteredEvents = events.filter(event => event.year >= startYear && event.year <= endYearInclusive);
         
         if (state.wrongOnly) {
@@ -434,14 +497,33 @@
         const currentEvent = state.questions[state.currentQuestionIndex];
         document.getElementById('event-name').textContent = currentEvent.name;
         document.getElementById('current-question').textContent = state.currentQuestionIndex + 1;
-        document.getElementById('year-input').value = '';
-        document.getElementById('month-input').value = '';
         
-        // 월이 없는 문제인 경우 월 입력란 숨기기
-        if (currentEvent.month === 0) {
-            document.getElementById('month-input').style.display = 'none';
-        } else {
-            document.getElementById('month-input').style.display = 'block';
+        // 입력 필드 초기화
+        startYearInput.value = '';
+        startMonthInput.value = '';
+        startDayInput.value = '';
+        endYearInput.value = '';
+        endMonthInput.value = '';
+        endDayInput.value = '';
+
+        const isDurationEvent = currentEvent.endYear > 0;
+
+        // 1. 기간 구분자와 끝 날짜 입력 영역 표시/숨김
+        durationSeparator.classList.toggle('hidden', !isDurationEvent);
+        endDatePart.classList.toggle('hidden', !isDurationEvent);
+
+        // 2. 시작 날짜 입력 필드 동적 표시/숨김
+        startMonthInput.classList.toggle('hidden', currentEvent.month === 0);
+        startDayInput.classList.toggle('hidden', currentEvent.day === 0);
+        startYearDot.classList.toggle('hidden', currentEvent.month === 0);
+        startMonthDot.classList.toggle('hidden', currentEvent.day === 0 || currentEvent.month === 0);
+
+        // 3. 끝 날짜 입력 필드 동적 표시/숨김 (기간 사건일 경우)
+        if (isDurationEvent) {
+            endMonthInput.classList.toggle('hidden', currentEvent.endMonth === 0);
+            endDayInput.classList.toggle('hidden', currentEvent.endDay === 0);
+            endYearDot.classList.toggle('hidden', currentEvent.endMonth === 0);
+            endMonthDot.classList.toggle('hidden', currentEvent.endDay === 0 || currentEvent.endMonth === 0);
         }
 
         // 결과 메시지 초기화
@@ -453,26 +535,61 @@
         const quizActions = document.getElementById('quiz-actions');
         quizActions.innerHTML = '<button class="btn btn-primary text-lg" onclick="checkAnswer()">답안 확인 (Enter)</button>';
         
-        // 다음 문제로 넘어갈 때 무조건 년도 입력 필드에 포커스를 맞춥니다.
-        document.getElementById('year-input').focus();
+        startYearInput.focus();
     }
 
     function checkAnswer() {
         const currentEvent = state.questions[state.currentQuestionIndex];
-        const yearInput = parseInt(document.getElementById('year-input').value);
-        const monthInput = parseInt(document.getElementById('month-input').value) || 0;
+        const isDurationEvent = currentEvent.endYear > 0;
+
+        // 시작 날짜 입력 값 (값이 없으면 0으로 처리)
+        const sY = parseInt(startYearInput.value) || 0;
+        const sM = parseInt(startMonthInput.value) || 0;
+        const sD = parseInt(startDayInput.value) || 0;
+        
+        // 끝 날짜 입력 값 (기간 사건일 경우에만 필요, 값이 없으면 0으로 처리)
+        let eY = 0, eM = 0, eD = 0;
+        if (isDurationEvent) {
+            eY = parseInt(endYearInput.value) || 0;
+            eM = parseInt(endMonthInput.value) || 0;
+            eD = parseInt(endDayInput.value) || 0;
+        }
+
         const resultMessage = document.getElementById('result-message');
         
-        // 이미 답변이 처리되었는지 확인
         if (document.getElementById('next-question-btn')) return;
 
-        // 숫자가 입력되지 않은 경우 처리
-        if (isNaN(yearInput)) {
-            showMessage("연도를 숫자로 입력해주세요.");
+        // 필수 입력 필드 (시작 연도) 확인
+        if (sY === 0) {
+            showMessage("시작 연도를 숫자로 입력해주세요.");
             return;
         }
 
-        const isCorrect = yearInput === currentEvent.year && (currentEvent.month === 0 || monthInput === currentEvent.month);
+        let isCorrect;
+        
+        if (isDurationEvent) {
+            // 기간 사건 정답 확인 로직
+            const startCorrect = sY === currentEvent.year &&
+                                 (currentEvent.month === 0 || sM === currentEvent.month) &&
+                                 (currentEvent.day === 0 || sD === currentEvent.day);
+            
+            const endCorrect = eY === currentEvent.endYear &&
+                               (currentEvent.endMonth === 0 || eM === currentEvent.endMonth) &&
+                               (currentEvent.endDay === 0 || eD === currentEvent.endDay);
+                               
+            isCorrect = startCorrect && endCorrect;
+            
+        } else {
+            // 단일 사건 정답 확인 로직
+            const monthCheck = currentEvent.month === 0 || sM === currentEvent.month;
+            const dayCheck = currentEvent.day === 0 || sD === currentEvent.day;
+            
+            isCorrect = sY === currentEvent.year && monthCheck && dayCheck;
+        }
+        
+        // 정답 메시지 구성
+        let correctDetailString = `정답: ${formatEventDate(currentEvent)}`;
+
 
         if (isCorrect) {
             state.score++;
@@ -480,7 +597,7 @@
             resultMessage.textContent = '정답입니다.';
             resultMessage.classList.add('correct-bg');
         } else {
-            resultMessage.innerHTML = `오답입니다.<br>정답: ${currentEvent.year}${currentEvent.month !== 0 ? `년 ${currentEvent.month}월` : '년'}`;
+            resultMessage.innerHTML = `오답입니다.<br>${correctDetailString}`;
             resultMessage.classList.add('wrong-bg');
             state.wrongCounts[currentEvent.name] = (state.wrongCounts[currentEvent.name] || 0) + 1;
             saveWrongCounts();
@@ -490,7 +607,7 @@
 
         // '다음 문제' 버튼 생성
         const quizActions = document.getElementById('quiz-actions');
-        quizActions.innerHTML = ''; // 기존 '답안 확인' 버튼 제거
+        quizActions.innerHTML = ''; 
         const nextBtn = document.createElement('button');
         nextBtn.id = 'next-question-btn';
         nextBtn.className = 'btn btn-primary text-lg';
@@ -522,39 +639,50 @@
         }
     }
 
-    // 연도 입력 필드에 키보드 이벤트 리스너 추가 (엔터 키 누르면 월 입력란으로 이동 또는 답안 확인)
-    document.getElementById('year-input').addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // 기본 폼 제출 방지
+    // 다음 포커스 이동 로직 (Helper)
+    function moveToNextInput(currentInput, currentEvent) {
+        const isDurationEvent = currentEvent.endYear > 0;
 
-            const currentEvent = state.questions[state.currentQuestionIndex];
-            const isAnswered = document.getElementById('next-question-btn');
-            
-            if(isAnswered) {
-                // 이미 답을 맞췄으면 다음 문제로
-                isAnswered.click();
-            } else if (currentEvent.month !== 0) {
-                // 월 입력이 필요하면 월 입력란으로 포커스 이동
-                document.getElementById('month-input').focus();
-            } else {
-                // 월 입력이 필요 없으면 답안 확인
-                checkAnswer();
-            }
+        if (currentInput === startYearInput) {
+            if (currentEvent.month > 0) startMonthInput.focus();
+            else if (currentEvent.day > 0) startDayInput.focus();
+            else if (isDurationEvent) endYearInput.focus();
+            else checkAnswer();
+        } else if (currentInput === startMonthInput) {
+            if (currentEvent.day > 0) startDayInput.focus();
+            else if (isDurationEvent) endYearInput.focus();
+            else checkAnswer();
+        } else if (currentInput === startDayInput) {
+            if (isDurationEvent) endYearInput.focus();
+            else checkAnswer();
+        } else if (currentInput === endYearInput) {
+            if (currentEvent.endMonth > 0) endMonthInput.focus();
+            else if (currentEvent.endDay > 0) endDayInput.focus();
+            else checkAnswer();
+        } else if (currentInput === endMonthInput) {
+            if (currentEvent.endDay > 0) endDayInput.focus();
+            else checkAnswer();
+        } else if (currentInput === endDayInput) {
+            checkAnswer();
         }
-    });
+    }
 
-    // 월 입력 필드에 키보드 이벤트 리스너 추가 (엔터 키 누르면 답안 확인)
-    document.getElementById('month-input').addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // 기본 폼 제출 방지
-            const isAnswered = document.getElementById('next-question-btn');
-            if(isAnswered) {
-                // 이미 답을 맞췄으면 다음 문제로
-                isAnswered.click();
-            } else {
-                checkAnswer();
+    // 키보드 이벤트 리스너 통합 (Enter 키)
+    document.querySelectorAll('#date-input-display input[type="number"]').forEach(input => {
+        input.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                
+                const currentEvent = state.questions[state.currentQuestionIndex];
+                const isAnswered = document.getElementById('next-question-btn');
+                
+                if(isAnswered) {
+                    isAnswered.click();
+                } else {
+                    moveToNextInput(this, currentEvent); 
+                }
             }
-        }
+        });
     });
     
     // 전체 문서에 키보드 이벤트 리스너 추가 (스페이스바 누르면 다음 문제로)
