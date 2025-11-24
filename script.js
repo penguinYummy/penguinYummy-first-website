@@ -89,7 +89,7 @@ const historyQuestions = [
     { name: "제헌 헌법 공포 때 대통령의 임기를 4년, 1회에 한하여 중임할 수 있음을 명시한 체제는?", answer: "대통령 중심제", difficulty: "상" },
     { name: "1979년 김영삼 의원 제명에 반발하여 부산과 마산 지역에서 발생한 대규모 반유신 독재 민주화 운동은?", answer: "부마 민주 항쟁", difficulty: "상" },
     { name: "남반구의 추운 해안 지역과 섬들에 주로 서식하는 한 조류가 있다. 이 동물은 종에 따라 몸무게가 약 1~40kg, 몸길이가 40cm에서 120cm 정도까지 다양하며, 두꺼운 지방층과 촘촘한 깃털로 낮은 기온을 견딘다. 날개는 하늘을 나는 데 쓰이지 않지만, 물속에서 마치 지느러미처럼 사용해 매우 빠르게 유영할 수 있다. 육지에서는 뒤뚱거리며 걷거나 배로 미끄러지는 특징적인 움직임을 보이며, 주로 크릴과 작은 물고기를 먹는다. 검은 등과 흰 배의 선명한 대비가 특징인 이 동물은 무엇인가?", answer: "펭귄", difficulty: "상" }
-];
+    ];
 
 
 // --- 2. 상태 관리 ---
@@ -367,9 +367,9 @@ function renderQuestion(isYearQuiz) {
     const questionTextElement = document.getElementById(isYearQuiz ? 'event-name' : 'history-question-text');
     
     if (isYearQuiz) {
-        questionTextElement.textContent = currentQuestion.name; // 연도 퀴즈
+        questionTextElement.innerHTML = currentQuestion.name; // 연도 퀴즈
     } else {
-        questionTextElement.textContent = currentQuestion.name; // 단답형 퀴즈
+        questionTextElement.innerHTML = currentQuestion.name; // 단답형 퀴즈
     }
 
     // 4. 입력 필드 및 결과 메시지 초기화
@@ -664,5 +664,3 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
-
-
