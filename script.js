@@ -148,7 +148,6 @@ events = [
   { name: "소련과 국교 수립(북방 외교)", year: 1990, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "남북 유엔 동시 가입", year: 1991, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "중국과 국교 수립(북방외교)", year: 1992, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "금융 실명제", year: 1993, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "조선 총동부청사 철거", year: 1995, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "경제 협력 개발 기구 가입", year: 1996, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "외환 위기", year: 1997, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
