@@ -56,7 +56,7 @@ events = [
   { name: "4 13 호헌 조치", year: 1987, month: 4, day: 13, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "이한열 최루탄 피격", year: 1987, month: 6, day: 9, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "국민 대회", year: 1987, month: 6, day: 10, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "면동 성당 농성", year: 1987, month: 6, day: 10, endYear: 1987, endMonth: 6, endDay: 15 },
+  { name: "명동 성당 농성", year: 1987, month: 6, day: 10, endYear: 1987, endMonth: 6, endDay: 15 },
   { name: "국민 평화 대행진", year: 1987, month: 6, day: 26, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "6 29 민주화 선언 발표", year: 1987, month: 6, day: 29, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "제1차 경제 개발 5개년 계획", year: 1962, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
