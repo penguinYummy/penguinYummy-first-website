@@ -40,7 +40,7 @@ events = [
   { name: "7.4 남북 공동 성명", year: 1972, month: 7, day: 4, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "박정희 대통령의 비상계엄(국회 해산)", year: 1972, month: 10, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "제 8대 대통령 선거", year: 1972, month: 12, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "김급 조치 1호", year: 1974, month: 1, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+  { name: "긴급 조치 1호", year: 1974, month: 1, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "민청학련", year: 1974, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "인민 혁명단 재건 위원회 조작 사건", year: 1975, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "3.1 민주구국 선언", year: 1976, month: 3, day: 1, endYear: 0, endMonth: 0, endDay: 0 },
@@ -873,3 +873,4 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
