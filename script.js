@@ -161,7 +161,7 @@ events = [
   { name: "5차 개헌(대통령 직선제)", year: 1962, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "8차 개헌(대통령 7년 단임제)", year: 1980, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "9차 개헌", year: 1987, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "개발자 생일", year: 2009, month: 5, day: 4, endYear: 0, endMonth: 0, endDay: 0 }
+  { name: "닉슨 독트린", year: 1969, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 }
 ];
 
 const historyQuestions = [
