@@ -276,7 +276,7 @@ const historyQuestions = [
     { name: "1967년 박정희가 윤보선을 근소한 차이로 이기고 제6대 대통령에 당선되었다(O/X)", answer: "X", difficulty: "상"},
     { name: "박종철 고문 치사 사건 은폐를 규탄하고 호헌 철폐 철폐를 요구하는 국민 대회 전날 의식 불명 상태에 빠진 사람은?", answer: "이한열", difficulty: "상"},
     { name: "민의원과 참의원으로 구성된 국회는?", answer: "양원제 국회", difficulty: "상"},
-    { name: "제 1차 경제 개발 5개년 계획: 차관 도입, 외화 수입 제 2차 경제 개발 5개년 계획: 수출 중심의 경제 정책, 경부 고속도로 건설  제 3,4차 경제 개발 5개년 계획: 포항, 울산 창원 등 대규모 산업 단지 조성(o/x)", answer: "x", difficulty: "상"},
+    { name: "제 1차 경제 개발 5개년 계획: 차관 도입, 외화 수입 제 2차 경제 개발 5개년 계획: 수출 중심의 경제 정책 시작, 경부 고속도로 건설  제 3,4차 경제 개발 5개년 계획: 포항, 울산 창원 등 대규모 산업 단지 조성(o/x)", answer: "x", difficulty: "상"},
     { name: "군사 원조: 한국에 있는 한국군의 현대화 계획을 위해 앞으로 수년 동안 상당량의 장비를제 공한다. 경제 원조: 이미 약속한 바 있는 1억 5천만 달러 규모의 차관에 덧붙여 한국의 경제 개발을 돕기 위한 추가 차관을 제공한다. 의 내용이 담긴 것의 이름은?", answer: "브라운 각서", difficulty: "상"},
     // { name: "전두환의 12.12 군사반란은 박정희 정부 때 일어났다", answer: "o", difficulty: "상"},
     { name: "근면,자조,협동 정신을 강조한 것의 이름은?", answer: "새마을 운동", difficulty: "상"},
@@ -873,7 +873,6 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
-
 
 
 
