@@ -197,7 +197,7 @@ const historyQuestions = [
     { name: "정부에 의해 강제 이주한 서울 철거민들과 새로 이주한 빈민들이 정부의 무분별한 철거민 대책과 제대로 준비되지 않은 도시 행정에 반발해 경찰과 대치한 사건의 이름은?", answer: "광주 대단지 사건", difficulty: "하"},
     { name: "6.25 전쟁 이후 이승만 정부의 철도, 항만 등을 설치하는 산업을 이르는 말은?", answer: "기간산업", difficulty: "하"},
     { name: "장발하거나 미니스커트를 입은 사람을 경찰이 단속하게 한 법의 이름은?", answer: "경범죄 처벌법", difficulty: "하"},
-    { name: "1980년대 중반부터 저금리, 저유가의 3저 호항이 나타났다. 이때 앞서 말한 두갤르 제외한 한가지의 이름은? ", answer: "저달러", difficulty: "하"},
+    { name: "1980년대 중반부터 저금리, 저유가의 3저 호항이 나타났다. 이때 앞서 말한 두개를 제외한 한가지의 이름은? ", answer: "저달러", difficulty: "하"},
     { name: "1950년대 말 미국의 무상 원조가 감소하고 지원이 방식이 OO 차관으로 바뀌었다. OO에 들어갈 말은?", answer: "유상", difficulty: "하"},
     { name: "농협이 작물을 사겠다는 약속을 지키지 않아 농민들이 보상 투쟁을 벌여 1년 6개월여 만에 보상을 받아 낸 사건은?", answer: "함평 고구마 사건", difficulty: "하"},
     { name: "환경 문제에 대응하기 위해 대대적인 산림 녹화 선업을 추진해 성공을 거두고 국립 공원과 개발 제한 구역을 설정하였다.(o/x)", answer: "o", difficulty: "하"},
@@ -873,5 +873,6 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
