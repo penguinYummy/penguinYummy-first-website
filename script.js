@@ -82,7 +82,7 @@ events = [
   { name: "양념 통닭(OO년대)", year: 1980, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "중학교 이상의 교육 받은 인구 증가(OO년대)", year: 1960, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "무즙 파동", year: 1964, month: 12, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "고교 평준화(OO년대)", year: 1970, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+  { name: "고교 평준화 제도(OO년대)", year: 1970, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "대학생 수 증가와 고등 교육 대중화(OO년대)", year: 1980, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "라디오 보급(OO년대)", year: 1950, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "텔레비전 보급(OO년대)", year: 1960, month: 0, day: 0, endYear: 1970, endMonth: 0, endDay: 0 },
@@ -873,6 +873,7 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
 
