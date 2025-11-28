@@ -220,7 +220,7 @@ const historyQuestions = [
     { name: "1990년대 북한은 체제가 위협 받으며 심각한 경제 위기를 겪었다 이때 김정일을 비롯한 북한 지도자가 택한 군이 사회 전체를 이끄는 통치 방식은?", answer: "선군 정치", difficulty: "하"},
     { name: "1980년대 후반 시민운동이 본격화로 등장한 국민의 기본적인 인권을 보호하기 위한 기관은? ", answer: "국가 인권 위원회", difficulty: "하"},
     { name: "사회주의 체제가 위기에 빠지자 북한 전역에 등장한 주민들의 자유 시장은?", answer: "장마당", difficulty: "하"},
-    { name: "2008년대 남성 가장을 중심으로 가족 구성원들의 출생 혼인 사망등을 기록하는 제도는?", answer: "호주제", difficulty: "하"},
+    { name: "2008년대 폐지된 남성 가장을 중심으로 가족 구성원들의 출생 혼인 사망등을 기록하는 제도는?", answer: "호주제", difficulty: "하"},
     { name: "김일성이 만든 사상, 정치, 셩제, 군사 부분에서 주체성을 확보해야 생존이 가능하다는 사상 체계는?", answer: "주체사상", difficulty: "하"},
     // 난이도 '중'
     { name: "세계 무역을 확대하고 회원국 사이의 통상 분쟁을 해결하기 위해 1995년에 설립된 국제기구는? (한국어로)", answer: "세계 무역 기구", difficulty: "중"},
@@ -873,6 +873,7 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
 
