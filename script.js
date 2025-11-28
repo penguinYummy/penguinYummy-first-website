@@ -190,7 +190,7 @@ const historyQuestions = [
     { name: "통일 주체 국민 회의의 간접 선거로 당선된 대통령의 임기는?(숫자만 입력)", answer: "6", difficulty: "하"},
     { name: "박정희가 유신체제를 뭐라 부르며 합리화했나요?", answer: "한국적 민주주의", difficulty: "하"},
     { name: "환경 보전을 위한 국제적 노력으로 오존층 보호를 위해 가입한 곳의 이름은?", answer: "빈 협약", difficulty: "하"},
-    { name: "환경 보전을 위한 국제적 노력으로 바다 보호를 위해가입한 곳의 이름은?", answer: "런던 협약", difficulty: "하"},
+    { name: "환경 보전을 위한 국제적 노력으로 바다 보호를 위해 가입한 곳의 이름은?", answer: "런던 협약", difficulty: "하"},
     { name: "박정희 정부가 입시 과열을 막기 위해 시행한 제도는?", answer: "중학교 무시험 추첨제", difficulty: "하"},
     { name: "전두환 정부가 대학생들의 호응을 얻기 위해 민속 문화에 대한 관심을 불러일으키겠다는 취지로 실행한 전통문화 관련 대규모 관제 행사는?", answer: "국풍 81", difficulty: "하"},
     { name: "1979년 동대문 평화시장의 한 공장에서 일하던 전태일은 어떤 법의 준수를 요구하며 분신하였나요?", answer: "근로 기준법", difficulty: "하"},
@@ -873,6 +873,7 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
 
