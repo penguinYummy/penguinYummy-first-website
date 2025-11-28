@@ -110,7 +110,7 @@ events = [
   { name: "제헌 헌법에 지방 자치 규정", year: 1948, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "최초의 지방 의회 선거", year: 1952, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "유신 헌법에서 통일까지 지방 의회 유보", year: 1972, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "개정 헌법에서 통일까지 지방 자치 다시 규정", year: 1987, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+  { name: "개정 헌법에서 지방 자치 다시 규정", year: 1987, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "지방 의회 선거 실시", year: 1991, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "지방 자치 단체장 선거와 지방 의회 선거 동시 실시", year: 1995, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "교육감 직선제 도입", year: 2007, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
@@ -873,6 +873,7 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
 
