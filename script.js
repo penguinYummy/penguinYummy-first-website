@@ -186,7 +186,7 @@ const historyQuestions = [
     { name: "5.16 군사 정변 이후 박정희이 비밀리에 창당에 들어간 당의 이름은?", answer: "민주 공화당", difficulty: "하"},
     { name: "한국인과 베트남인 사이에서 태어난 아이를 부르는 명칭으로 베트남 파병 이후 문제가 된것은?", answer: "라이따이한", difficulty: "한"},
     { name: "베트남 파병 때 식물의 잎을 떨어뜨리기 위해 살포하는 제초제로 사용되어 한국군에게 후유증을 준 것의 이름은?", answer: "고엽제", difficulty: "하"},
-    { name: "박종희 정부는 1972년 10월 비상계엄을 선포하며 헌정 질서를 중단시키며 이곳을 해산 시키며 모든 정치 활동을 금지했다", answer: "국회", difficulty: "하"},
+    { name: "박정희 정부는 1972년 10월 비상계엄을 선포하며 헌정 질서를 중단시키며 이곳을 해산 시키며 모든 정치 활동을 금지했다", answer: "국회", difficulty: "하"},
     { name: "통일 주체 국민 회의의 간접 선거로 당선된 대통령의 임기는?(숫자만 입력)", answer: "6", difficulty: "하"},
     { name: "박정희가 유신체제를 뭐라 부르며 합리화했나요?", answer: "한국적 민주주의", difficulty: "하"},
     { name: "환경 보전을 위한 국제적 노력으로 오존층 보호를 위해 가입한 곳의 이름은?", answer: "빈 협약", difficulty: "하"},
@@ -873,6 +873,7 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
 
