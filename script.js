@@ -133,7 +133,6 @@ events = [
   { name: "합작 회사 경영법", year: 1984, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "고난의 행군(OO년대)", year: 1990, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "7.1 경제 관리 개선 조치", year: 2002, month: 7, day: 1, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "최초의 이산가족 상봉", year: 1984, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "이산가족 고향 방문단과 공연 예술단 방문", year: 1985, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "남북 기본 합의서", year: 1991, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "북한의 핵확산 금지 조약 탈퇴", year: 1993, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
@@ -873,6 +872,7 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
 
