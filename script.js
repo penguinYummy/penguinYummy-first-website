@@ -223,7 +223,7 @@ const historyQuestions = [
     { name: "2008년대 남성 가장을 중심으로 가족 구성원들의 출생 혼인 사망등을 기록하는 제도는?", answer: "호주제", difficulty: "하"},
     { name: "김일성이 만든 사상, 정치, 셩제, 군사 부분에서 주체성을 확보해야 생존이 가능하다는 사상 체계는?", answer: "주체사상", difficulty: "하"},
     // 난이도 '중'
-    { name: "세계 무역을 확대하고 회원국 사이으 통상 분쟁을 해결하기 위해 1995년에 설립된 국제기구는? (한국어로)", answer: "세계 무역 기구", difficulty: "중"},
+    { name: "세계 무역을 확대하고 회원국 사이의 통상 분쟁을 해결하기 위해 1995년에 설립된 국제기구는? (한국어로)", answer: "세계 무역 기구", difficulty: "중"},
     { name: "유신 헌법은 국회 별관에 모여 박정희 정부가 단독으로 통과 시켰다.(o/x)", answer: "x", difficulty: "중"},
     { name: "북한이 시장 경제 요소를 부분적으로 도입하며 발표한 것은?", answer: "7.1 경제 관리 개선 조치", difficulty: "중"},
     { name: "1984년 북한의 서방 국가와 단순한 물자 교역을 넘어선 외국인 투자 유치 정책은?", answer: "합영법", difficulty: "중"},
@@ -873,4 +873,5 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
