@@ -232,7 +232,7 @@ const historyQuestions = [
     { name: "미국과 FTA를 체결하며 발생한 사회적 논란으로 미국산 쇠고기의 수입 및 검역 조건을 완화했으나 이에대해 반대 시위가 일어난 사건은?", answer: "광우병 파동", difficulty: "중"},
     { name: "노무현 대통령이 국회의 탄핵을 받았지만 헌번 재판소에서 이를 기각하였다.(o/x)", answer: "o", difficulty: "중"},
     { name: "김영삼 대표가 임기 말 외환 위기를 맞아 IMF에 요청한 기업이나 국가 등이 파산하는 것을 막기 위해 금융 기관이 정책적으로 자금을 지원하는 것의 이름은?", answer: "구제 금융", difficulty: "중"},
-    { name: "남한에서 대한민국 정부가 수립되자 북한도 총선거를 실시해 만든 남한의 국회에 해당하는 곳의 이름은?", answer: "최고 인민 위원회", difficulty: "중"},
+    { name: "남한에서 대한민국 정부가 수립되자 북한도 총선거를 실시해 만든 남한의 국회에 해당하는 곳의 이름은?", answer: "최고 인민 회의", difficulty: "중"},
     { name: "산업화가 진행되며 정부와 기업은 수출 경쟁력을 확보하기 위해 노동자의 권리를 제한하고 어떤 정책을 추진했나요?", answer: "저임금 정책", difficulty: "중"},
     { name: "광복 당시 농민들은 어떤 원칙에 따라 토지를 개혁하기를 원했나요?(OO의 원칙으로 입력)", answer: "경자 유전의 원칙", difficulty: "중" },
     { name: "1952년 이승만 대통령의 재선을 위해 직선제와 양원제를 혼합하여 변칙적으로 개헌한 사건은?", answer: "발췌 개헌", difficulty: "중" },
@@ -873,6 +873,7 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
+
 
 
 
