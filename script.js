@@ -25,7 +25,7 @@ events = [
   { name: "3.15 부정선거", year: 1960, month: 3, day: 15, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "4.19 혁명", year: 1960, month: 4, day: 19, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "대학교수단의 시국 선언", year: 1960, month: 4, day: 25, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "5.16군사정변", year: 1961, month: 5, day: 16, endYear: 0, endMonth: 0, endDay: 0 },
+  { name: "5.16 군사정변", year: 1961, month: 5, day: 16, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "혁명 공약", year: 1961, month: 5, day: 16, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "제5대 대통령 선거", year: 1963, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "6.3 시위", year: 1964, month: 6, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
@@ -47,7 +47,6 @@ events = [
   { name: "제9대 대통령 선거", year: 1978, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "부마 민주 항쟁", year: 1979, month: 10, day: 16, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "10 26 사태", year: 1979, month: 10, day: 26, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "부마 민주 항쟁", year: 1979, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "제10대 대통령 선거", year: 1979, month: 12, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "12 12 군사 반란", year: 1979, month: 12, day: 12, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "서울의 봄", year: 1980, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
@@ -110,7 +109,7 @@ events = [
   { name: "제헌 헌법에 지방 자치 규정", year: 1948, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "최초의 지방 의회 선거", year: 1952, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "유신 헌법에서 통일까지 지방 의회 유보", year: 1972, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
-  { name: "개정 헌법에서 지방 자치 다시 규정", year: 1987, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
+  { name: "개정 헌법에서 통일까지 지방 자치 다시 규정", year: 1987, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "지방 의회 선거 실시", year: 1991, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "지방 자치 단체장 선거와 지방 의회 선거 동시 실시", year: 1995, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "교육감 직선제 도입", year: 2007, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
@@ -133,6 +132,7 @@ events = [
   { name: "합작 회사 경영법", year: 1984, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "고난의 행군(OO년대)", year: 1990, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "7.1 경제 관리 개선 조치", year: 2002, month: 7, day: 1, endYear: 0, endMonth: 0, endDay: 0 },
+  { name: "최초의 이산가족 상봉", year: 1984, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "이산가족 고향 방문단과 공연 예술단 방문", year: 1985, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "남북 기본 합의서", year: 1991, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
   { name: "북한의 핵확산 금지 조약 탈퇴", year: 1993, month: 0, day: 0, endYear: 0, endMonth: 0, endDay: 0 },
@@ -872,8 +872,6 @@ document.getElementById('timeline-search').addEventListener('input', (e) => {
 // --- 11. 초기화 및 시작 ---
 loadWrongCounts();
 showScreen('menu');
-
-
 
 
 
