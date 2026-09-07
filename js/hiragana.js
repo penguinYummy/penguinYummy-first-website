@@ -251,6 +251,32 @@ function showFinish() {
 
 
 /* =========================
+   엔터 키 처리
+
+   - 정답을 확인한 뒤(다음 버튼이 보이는 상태) 엔터 -> 다음 문제
+========================= */
+
+document.addEventListener("keydown", function (event) {
+
+    if (event.key !== "Enter") {
+        return;
+    }
+
+    const nextBtn =
+        document.getElementById("nextBtn");
+
+    if (nextBtn.style.display === "block") {
+
+        event.preventDefault();
+
+        nextQuestion();
+
+    }
+
+});
+
+
+/* =========================
    실행
 ========================= */
 
