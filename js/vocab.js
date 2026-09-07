@@ -6,20 +6,91 @@ let currentQuestion = 0;
 let score = 0;
 let questions = [];
 let answered = false;
+let currentCategory = "all";
+let quizFinished = false;
+
+
+/* =========================
+   카테고리 선택
+========================= */
+
+function selectCategory(category) {
+
+    currentCategory = category;
+
+    const filtered =
+        category === "all"
+            ? VOCAB_DATA
+            : VOCAB_DATA.filter(item => item.category === category);
+
+    /* 해당 카테고리에 문제가 하나도 없으면 안내 후 중단 */
+
+    if (filtered.length === 0) {
+
+        alert("아직 이 유형의 단어가 없습니다.");
+
+        return;
+
+    }
+
+    document.getElementById("categoryScreen").style.display =
+        "none";
+
+    document.getElementById("quizScreen").style.display =
+        "block";
+
+    document.getElementById("progressContainer").style.display =
+        "block";
+
+    document.getElementById("categoryChangeLink").style.display =
+        "inline-block";
+
+    startQuiz(filtered);
+
+}
+
+
+/* =========================
+   카테고리 다시 선택
+========================= */
+
+function showCategoryScreen() {
+
+    document.getElementById("categoryScreen").style.display =
+        "block";
+
+    document.getElementById("quizScreen").style.display =
+        "none";
+
+    document.getElementById("progressContainer").style.display =
+        "none";
+
+    document.getElementById("categoryChangeLink").style.display =
+        "none";
+
+    document.getElementById("progress").textContent = "";
+
+}
 
 
 /* =========================
    퀴즈 시작
 ========================= */
 
-function startQuiz() {
+function startQuiz(data) {
 
-    questions = shuffle([...VOCAB_DATA]);
+    /* 퀴즈 완료 화면에서 재사용한 wordKanji/wordReading 내용 복구 */
+
+    document.getElementById("wordKanji").innerHTML = "";
+    document.getElementById("wordReading").innerHTML = "";
+
+    questions = shuffle([...data]);
 
     currentQuestion = 0;
     score = 0;
+    quizFinished = false;
 
-    document.querySelector(".question-label").textContent =
+    document.getElementById("quizQuestionLabel").textContent =
         "이 단어의 뜻은 무엇일까요?";
 
     showQuestion();
@@ -48,7 +119,7 @@ function showQuestion() {
     document.getElementById("progressBar").style.width =
         `${progressPercent}%`;
 
-    /* 단어 / 읽는 법 */
+    /* 단어 / 유형 */
 
     document.getElementById("wordKanji").textContent =
         question.word;
@@ -61,8 +132,8 @@ function showQuestion() {
     const input =
         document.getElementById("answerInput");
 
-    input.value = "";
     input.disabled = false;
+    input.value = "";
     input.classList.remove("correct", "wrong");
 
     input.focus();
@@ -211,10 +282,7 @@ function nextQuestion() {
 
 
 /* =========================
-   엔터 키 처리
-
-   - 아직 답을 입력하지 않은 상태: 엔터 -> 정답 확인
-   - 이미 답을 확인한 상태: 엔터 -> 다음 문제
+   입력창 엔터 키 처리 (정답 제출용)
 ========================= */
 
 function handleInputKeydown(event) {
@@ -223,39 +291,71 @@ function handleInputKeydown(event) {
         return;
     }
 
+    if (answered) {
+        return;
+    }
+
     event.preventDefault();
 
-    if (answered) {
-
-        nextQuestion();
-
-    }
-
-    else {
-
-        checkAnswer();
-
-    }
+    checkAnswer();
 
 }
 
 
 /* =========================
+   엔터로 다음 문제 / 다시 시작
+
+   입력창이 비활성화된 상태에서는 입력창 자체가 keydown 이벤트를
+   받지 못하므로, document 레벨에서 엔터를 감지한다.
+========================= */
+
+document.addEventListener("keydown", (event) => {
+
+    if (event.key !== "Enter") {
+        return;
+    }
+
+    const quizScreenVisible =
+        document.getElementById("quizScreen").style.display !== "none";
+
+    const nextBtn =
+        document.getElementById("nextBtn");
+
+    if (quizScreenVisible && nextBtn.style.display === "block") {
+
+        event.preventDefault();
+
+        handleNextClick();
+
+    }
+
+});
+
+
+/* =========================
    결과 화면
+
+   주의: wordDisplay 전체가 아니라 그 안의 wordKanji/wordReading의
+   내용만 바꾼다. wordDisplay를 통째로 교체하면 wordKanji/wordReading
+   요소 자체가 사라져서, 다시 시작할 때 해당 id를 찾지 못해
+   오류가 나고 화면이 멈추는 문제가 있었다.
 ========================= */
 
 function showFinish() {
 
-    document.querySelector(".question-label").textContent =
+    quizFinished = true;
+
+    document.getElementById("quizQuestionLabel").textContent =
         "퀴즈 완료";
 
-    document.getElementById("wordDisplay").innerHTML =
-        `<div>
-            <div class="finish-title">최종 점수</div>
-            <div class="finish-score">
-                ${score} / ${questions.length}
-            </div>
+    document.getElementById("wordKanji").innerHTML =
+        `<div class="finish-title">최종 점수</div>
+        <div class="finish-score">
+            ${score} / ${questions.length}
         </div>`;
+
+    document.getElementById("wordReading").textContent =
+        "";
 
     document.getElementById("progress").textContent =
         "완료";
@@ -278,15 +378,39 @@ function showFinish() {
     nextBtn.style.display =
         "block";
 
-    nextBtn.onclick =
-        () => {
+}
 
-            document.getElementById("inputArea").style.display =
-                "flex";
 
-            startQuiz();
+/* =========================
+   다음 버튼(엔터 포함) 클릭 처리
 
-        };
+   - 퀴즈 진행 중: 다음 문제로 이동
+   - 퀴즈 완료 후: 같은 카테고리로 다시 시작
+========================= */
+
+function handleNextClick() {
+
+    if (quizFinished) {
+
+        document.getElementById("inputArea").style.display =
+            "flex";
+
+        const filtered =
+            currentCategory === "all"
+                ? VOCAB_DATA
+                : VOCAB_DATA.filter(
+                    item => item.category === currentCategory
+                );
+
+        startQuiz(filtered);
+
+    }
+
+    else {
+
+        nextQuestion();
+
+    }
 
 }
 
@@ -294,6 +418,26 @@ function showFinish() {
 /* =========================
    실행
 ========================= */
+
+document.querySelectorAll("#categoryList .answer").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        selectCategory(btn.dataset.category);
+
+    });
+
+});
+
+document.getElementById("categoryChangeLink").addEventListener(
+    "click", (event) => {
+
+        event.preventDefault();
+
+        showCategoryScreen();
+
+    }
+);
 
 document.getElementById("submitBtn").addEventListener(
     "click", checkAnswer
@@ -304,7 +448,5 @@ document.getElementById("answerInput").addEventListener(
 );
 
 document.getElementById("nextBtn").addEventListener(
-    "click", nextQuestion
+    "click", handleNextClick
 );
-
-startQuiz();
