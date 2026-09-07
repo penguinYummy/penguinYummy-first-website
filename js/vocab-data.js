@@ -12,6 +12,8 @@ const VOCAB_DATA = [
 
     { category: "동사", word: "おきる", meaning: ["일어나다"] },
     { category: "동사", word: "あらう", meaning: ["씻다"] },
+   
+    { category: "명사", word: "あらう", meaning: ["씻다"] },
 
     { category: "문장", word: "こんしゅうまつ、なにする？", meaning: ["이번 주말, 뭐하니?"] }
 
