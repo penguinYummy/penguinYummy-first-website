@@ -419,7 +419,7 @@ function handleNextClick() {
    실행
 ========================= */
 
-document.querySelectorAll("#categoryList .answer").forEach(btn => {
+document.querySelectorAll("#categoryList .menu-card").forEach(btn => {
 
     btn.addEventListener("click", () => {
 
