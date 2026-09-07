@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>가타카나 학습</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="quiz-container">
+
+    <div class="top-bar">
+        <a class="back-link" href="index.html">목록으로</a>
+    </div>
+
+    <div class="header">
+        <div class="logo">KATAKANA</div>
+        <div class="counter" id="progress">1 / 46</div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="question-label">이 문자의 발음은 무엇일까요?</div>
+
+    <div class="kana-display" id="kana"></div>
+
+    <div class="answers" id="answers"></div>
+
+    <div class="result" id="result"></div>
+
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+        다음 문제
+    </button>
+
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/katakana-data.js"></script>
+<script src="js/katakana.js"></script>
+
+</body>
+</html>
