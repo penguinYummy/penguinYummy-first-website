@@ -547,6 +547,14 @@ body {
 }
 
 .menu-card {
+    width: 100%;
+
+    text-align: left;
+
+    font-family: inherit;
+
+    appearance: none;
+    -webkit-appearance: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
