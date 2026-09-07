@@ -54,7 +54,7 @@ function showQuestion() {
         question.word;
 
     document.getElementById("wordReading").textContent =
-        question.reading;
+        `[${question.category}]`;
 
     /* 입력창 초기화 */
 
@@ -88,6 +88,24 @@ function showQuestion() {
 
 
 /* =========================
+   정답 비교용 정규화
+
+   - 띄어쓰기 전부 제거
+   - 문장부호(쉼표, 마침표, 물음표, 느낌표) 제거
+   - 문장 형태 정답도 띄어쓰기 없이 입력하면 정답 처리되도록 함
+========================= */
+
+function normalizeAnswer(text) {
+
+    return text
+        .trim()
+        .replace(/\s+/g, "")
+        .replace(/[,.!?？！。、]/g, "");
+
+}
+
+
+/* =========================
    정답 확인
 ========================= */
 
@@ -110,9 +128,12 @@ function checkAnswer() {
     const question =
         questions[currentQuestion];
 
+    const normalizedUserAnswer =
+        normalizeAnswer(userAnswer);
+
     const isCorrect =
         question.meaning.some(
-            m => m.trim() === userAnswer
+            m => normalizeAnswer(m) === normalizedUserAnswer
         );
 
     answered = true;
