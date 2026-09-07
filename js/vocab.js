@@ -42,9 +42,6 @@ function selectCategory(category) {
     document.getElementById("progressContainer").style.display =
         "block";
 
-    document.getElementById("categoryChangeLink").style.display =
-        "inline-block";
-
     startQuiz(filtered);
 
 }
@@ -63,9 +60,6 @@ function showCategoryScreen() {
         "none";
 
     document.getElementById("progressContainer").style.display =
-        "none";
-
-    document.getElementById("categoryChangeLink").style.display =
         "none";
 
     document.getElementById("progress").textContent = "";
@@ -287,7 +281,7 @@ function nextQuestion() {
 
 function handleInputKeydown(event) {
 
-    if (event.key !== " Enter") {
+    if (event.key !== "Enter") {
         return;
     }
 
@@ -296,6 +290,12 @@ function handleInputKeydown(event) {
     }
 
     event.preventDefault();
+
+    /* 이 이벤트가 document 레벨 리스너까지 전달되면, 방금 checkAnswer()로
+       나타난 "다음 문제" 버튼을 보고 바로 다음 문제로 넘어가버리는
+       문제가 있었다. 그래서 여기서 이벤트 전파를 막는다. */
+
+    event.stopPropagation();
 
     checkAnswer();
 
@@ -428,16 +428,6 @@ document.querySelectorAll("#categoryList .menu-card").forEach(btn => {
     });
 
 });
-
-document.getElementById("categoryChangeLink").addEventListener(
-    "click", (event) => {
-
-        event.preventDefault();
-
-        showCategoryScreen();
-
-    }
-);
 
 document.getElementById("submitBtn").addEventListener(
     "click", checkAnswer
