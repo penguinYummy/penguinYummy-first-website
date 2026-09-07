@@ -30,13 +30,43 @@
     <!-- 카테고리 선택 화면 -->
     <div id="categoryScreen">
 
-        <div class="question-label">어떤 유형을 학습할까요?</div>
+        <div class="menu-title" style="font-size:18px; margin-bottom:4px;">어떤 유형을 학습할까요?</div>
+        <div class="menu-subtitle" style="margin-bottom:20px;">유형을 고르면 해당 단어만 출제됩니다.</div>
 
-        <div class="answers" id="categoryList">
-            <button class="answer" data-category="동사">동사</button>
-            <button class="answer" data-category="명사">명사</button>
-            <button class="answer" data-category="문장">문장</button>
-            <button class="answer" data-category="all">전체</button>
+        <div class="menu-list" id="categoryList">
+
+            <button class="menu-card" type="button" data-category="동사">
+                <div>
+                    <div class="menu-card-title">동사</div>
+                    <div class="menu-card-desc">동작을 나타내는 단어</div>
+                </div>
+                <div class="menu-card-arrow">&gt;</div>
+            </button>
+
+            <button class="menu-card" type="button" data-category="명사">
+                <div>
+                    <div class="menu-card-title">명사</div>
+                    <div class="menu-card-desc">사물, 사람 등을 나타내는 단어</div>
+                </div>
+                <div class="menu-card-arrow">&gt;</div>
+            </button>
+
+            <button class="menu-card" type="button" data-category="문장">
+                <div>
+                    <div class="menu-card-title">문장</div>
+                    <div class="menu-card-desc">짧은 문장 표현</div>
+                </div>
+                <div class="menu-card-arrow">&gt;</div>
+            </button>
+
+            <button class="menu-card" type="button" data-category="all">
+                <div>
+                    <div class="menu-card-title">전체</div>
+                    <div class="menu-card-desc">모든 유형을 섞어서 출제</div>
+                </div>
+                <div class="menu-card-arrow">&gt;</div>
+            </button>
+
         </div>
 
     </div>
