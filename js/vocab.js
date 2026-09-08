@@ -113,13 +113,10 @@ function showQuestion() {
     document.getElementById("progressBar").style.width =
         `${progressPercent}%`;
 
-    /* 단어 / 유형 */
+    /* 단어 */
 
     document.getElementById("wordKanji").textContent =
         question.word;
-
-    document.getElementById("wordReading").textContent =
-        `[${question.category}]`;
 
     /* 입력창 초기화 */
 
