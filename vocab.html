@@ -3,37 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>단어 학습</title>
-
-    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/style.css?v=3">
 </head>
-
 <body>
-
 <div class="quiz-container">
-
     <div class="top-bar">
         <a class="back-link" href="index.html">목록으로</a>
     </div>
-
     <div class="header">
         <div class="logo">VOCABULARY</div>
         <div class="counter" id="progress"></div>
     </div>
-
     <div class="progress-container" id="progressContainer" style="display:none;">
         <div class="progress-bar" id="progressBar"></div>
     </div>
-
     <!-- 카테고리 선택 화면 -->
     <div id="categoryScreen">
-
         <div class="menu-title" style="font-size:18px; margin-bottom:4px;">어떤 유형을 학습할까요?</div>
         <div class="menu-subtitle" style="margin-bottom:20px;">유형을 고르면 해당 단어만 출제됩니다.</div>
-
         <div class="menu-list" id="categoryList">
-
             <button class="menu-card" type="button" data-category="동사">
                 <div>
                     <div class="menu-card-title">동사</div>
@@ -41,7 +30,6 @@
                 </div>
                 <div class="menu-card-arrow">&gt;</div>
             </button>
-
             <button class="menu-card" type="button" data-category="명사">
                 <div>
                     <div class="menu-card-title">명사</div>
@@ -49,7 +37,6 @@
                 </div>
                 <div class="menu-card-arrow">&gt;</div>
             </button>
-
             <button class="menu-card" type="button" data-category="문장">
                 <div>
                     <div class="menu-card-title">문장</div>
@@ -57,7 +44,6 @@
                 </div>
                 <div class="menu-card-arrow">&gt;</div>
             </button>
-
             <button class="menu-card" type="button" data-category="all">
                 <div>
                     <div class="menu-card-title">전체</div>
@@ -65,20 +51,15 @@
                 </div>
                 <div class="menu-card-arrow">&gt;</div>
             </button>
-
         </div>
-
     </div>
-
     <!-- 퀴즈 화면 -->
     <div id="quizScreen" style="display:none;">
-
         <div class="question-label" id="quizQuestionLabel">이 단어의 뜻은 무엇일까요?</div>
-
         <div class="word-display" id="wordDisplay">
             <div class="word-kanji" id="wordKanji"></div>
+            <div class="word-reading" id="wordReading"></div>
         </div>
-
         <div class="input-area" id="inputArea">
             <input
                 type="text"
@@ -89,20 +70,14 @@
             >
             <button class="submit-btn" id="submitBtn">확인</button>
         </div>
-
         <div class="result" id="result"></div>
-
         <button class="next-btn" id="nextBtn">
             다음 문제
         </button>
-
     </div>
-
 </div>
-
-<script src="js/common.js?v=2"></script>
-<script src="js/vocab-data.js?v=2"></script>
-<script src="js/vocab.js?v=2"></script>
-
+<script src="js/common.js?v=3"></script>
+<script src="js/vocab-data.js?v=3"></script>
+<script src="js/vocab.js?v=3"></script>
 </body>
 </html>
