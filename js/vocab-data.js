@@ -29,8 +29,8 @@ const VOCAB_DATA = [
     { category: "동사", word: "あける", meaning: ["열다"] },
     { category: "동사", word: "よぶ", meaning: ["부르다"] },
     { category: "동사", word: "でる", meaning: ["나가다"] },
-    { category: "동사", word: "すすめる", meaning: ["권하다"] },
-    { category: "동사", word: "まちがう", meaning: ["틀리다"] },
+    { category: "동사", word: "さそう", meaning: ["권하다"] },
+    { category: "동사", word: "ちがう", meaning: ["틀리다"] },
 
     /* ===== 명사 ===== */
 
